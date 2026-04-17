@@ -82,10 +82,9 @@ export default function OracleProofPage() {
           Oracle Settlement Demo
         </h1>
         <p className="mt-2 text-sm text-zinc-400 max-w-xl">
-          Adjust the oracle price, pledged ADA, or goal to see how the
-          settlement outcome changes. When live mode is configured, the
-          current ADA/USD price is fetched from the Charli3 on-chain feed
-          via Kupo.
+          The live ADA/USD price is fetched from the Charli3 on-chain feed
+          on Cardano preprod. Adjust the price, pledged ADA, or goal below
+          to see how the settlement outcome changes.
         </p>
 
         {/* Live oracle status */}
@@ -114,21 +113,37 @@ export default function OracleProofPage() {
               </p>
             </div>
             <div>
-              <p className="text-xs text-zinc-500">Current Price</p>
+              <p className="text-xs text-zinc-500">Feed</p>
+              <p className="mt-0.5 text-sm text-zinc-200">ADA/USD</p>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500">Normalized Price</p>
               <p className="mt-0.5 text-sm text-zinc-200">
                 {live.loading ? "..." : live.price > 0 ? formatAdaUsd(live.price) : "—"}
               </p>
             </div>
             <div>
+              <p className="text-xs text-zinc-500">Raw Integer</p>
+              <p className="mt-0.5 text-sm font-mono text-zinc-200">
+                {live.loading ? "..." : live.price > 0 ? Math.round(live.price * 1e6).toString() : "—"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500">Precision</p>
+              <p className="mt-0.5 text-sm font-mono text-zinc-400">
+                {live.status === "live" ? "1e6 (raw / 1,000,000)" : "—"}
+              </p>
+            </div>
+            <div>
               <p className="text-xs text-zinc-500">Source</p>
-              <p className="mt-0.5 text-sm text-zinc-400 text-xs">
+              <p className="mt-0.5 text-xs text-zinc-400">
                 {live.source || "—"}
               </p>
             </div>
             <div>
-              <p className="text-xs text-zinc-500">Last Fetch</p>
-              <p className="mt-0.5 text-sm text-zinc-400 text-xs">
-                {live.timestamp ? new Date(live.timestamp).toLocaleTimeString() : "—"}
+              <p className="text-xs text-zinc-500">Timestamp</p>
+              <p className="mt-0.5 text-xs text-zinc-400">
+                {live.timestamp ? new Date(live.timestamp).toLocaleString() : "—"}
               </p>
             </div>
           </div>

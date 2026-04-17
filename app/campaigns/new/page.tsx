@@ -9,8 +9,8 @@ export default function NewCampaignPage() {
           Create a Campaign
         </h1>
         <p className="mt-2 text-sm text-zinc-400">
-          Set your funding goal in USD. Backers will pledge in ADA, and the
-          oracle determines the outcome at close.
+          Set your funding goal in USD. Supporters back your campaign in ADA,
+          and the oracle determines the outcome at close.
         </p>
         <div className="mt-10">
           <CampaignForm />

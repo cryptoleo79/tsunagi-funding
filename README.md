@@ -15,7 +15,7 @@ and when it closes. Without an oracle, there is no trustworthy way to
 determine whether a campaign actually met its USD target.
 
 The oracle is not decorative — it is the mechanism that decides whether funds
-are released to the creator or returned to backers. TSUNAGI Funding reads
+are released to the creator or returned to supporters. TSUNAGI Funding reads
 the Charli3 ADA/USD price feed directly from the Cardano chain via Kupo and
 uses it as the settlement authority.
 
@@ -56,7 +56,7 @@ flowchart LR
     C --> D[Charli3 ADA/USD oracle]
     D --> E{Goal met?}
     E -- Yes --> F[Funds released]
-    E -- No --> G[Backers refunded]
+    E -- No --> G[Supporters refunded]
 ```
 
 ## Product flow
@@ -67,7 +67,7 @@ flowchart LR
 4. The app fetches the current ADA/USD price from the Charli3 on-chain feed
 5. `pledged_ada * ada_usd_price` is compared to `goal_usd`
 6. If the goal is met, funds are released to the creator
-7. If not, pledges are returned to backers
+7. If not, pledges are returned to supporters
 
 ## Routes
 
@@ -122,6 +122,17 @@ To verify the oracle integration:
    pledge panel.
 4. **`/campaigns/1/close`** — the settlement page that uses the live oracle
    to determine whether the campaign goal was met.
+
+### Quick verification
+
+From the terminal, with the dev server running:
+
+```bash
+curl http://localhost:3000/api/oracle
+```
+
+Expected response includes `"status": "live"`, a real ADA/USD price, and
+`"source"` referencing Charli3 preprod with a slot number.
 
 The oracle layer lives in `lib/oracle/`. The datum decoder in `decode.ts`
 handles real Plutus CBOR from the Charli3 ODV contract.

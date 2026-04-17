@@ -30,12 +30,12 @@ export function SettlementResultBanner({ result }: SettlementResultBannerProps) 
               funded ? "text-emerald-300" : "text-amber-300"
             }`}
           >
-            {funded ? "Campaign Funded" : "Campaign Refunded"}
+            {funded ? "Campaign Funded" : "Supporters Refunded"}
           </h3>
           <p className="text-sm text-zinc-400">
             {funded
-              ? `The campaign raised ${formatUsd(result.usdRaised)}, meeting its ${formatUsd(result.goalUsd)} goal. Funds will be released to the creator.`
-              : `The campaign raised ${formatUsd(result.usdRaised)}, falling short of the ${formatUsd(result.goalUsd)} goal. Pledges will be returned to backers.`}
+              ? `The campaign raised ${formatUsd(result.usdRaised)}, meeting its ${formatUsd(result.goalUsd)} goal. Funds are released to the creator.`
+              : `The campaign raised ${formatUsd(result.usdRaised)}, falling short of the ${formatUsd(result.goalUsd)} goal. Pledges are returned to supporters.`}
           </p>
         </div>
       </div>

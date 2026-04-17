@@ -3,12 +3,12 @@
 ## Intended flow
 
 1. Creator sets a campaign with a USD-denominated goal.
-2. Backers pledge ADA to the campaign.
+2. Supporters pledge ADA to the campaign.
 3. When the campaign closes, the settlement path is triggered.
 4. The settlement reads the current ADA/USD price from the Charli3 on-chain feed.
 5. `pledged_ada * ada_usd_price` is compared to `goal_usd`.
 6. If the USD equivalent meets or exceeds the goal, funds are released to the creator.
-7. If not, pledges are returned to backers.
+7. If not, pledges are returned to supporters.
 
 ## Why Charli3
 
@@ -56,15 +56,14 @@ hardcoded demo prices and labels them clearly as mock data.
 
 ## Current state
 
-- Kupo query path: implemented
+- Kupo query path: implemented and verified on preprod
 - CBOR datum decoder: implemented (handles integers, byte strings, arrays, maps, constructors)
-- Price extraction: heuristic, tries multiple known Charli3 datum layouts
+- Charli3 ODV datum format: validated against real preprod UTxO data
+- Price extraction: handles known Charli3 layouts including nested Constr/Map
 - Fallback: graceful, with explicit reason shown in the UI
-- Live validation: depends on correct Charli3 address/policy ID and accessible Kupo endpoint
+- Live: working on preprod with hosted Kupo endpoint
 
 ## What is not yet done
 
-- Datum format has not been validated against a real Charli3 preprod UTxO
-- Ogmios is not used yet (Kupo is sufficient for reading feed state)
 - Price staleness validation (rejecting prices older than a threshold)
 - On-chain settlement transactions

@@ -17,9 +17,9 @@ export default function Home() {
           </p>
           <p className="mt-6 max-w-2xl text-zinc-500 leading-relaxed">
             Oracle-native crowdfunding on Cardano. Creators set a goal in USD,
-            supporters pledge in ADA, and at campaign close a live Charli3
-            oracle rate determines whether the goal was met. Funded campaigns
-            release to the creator. Missed targets refund backers automatically.
+            supporters back campaigns in ADA, and at campaign close a live
+            Charli3 oracle rate determines whether the goal was met. If funded,
+            ADA is released to the creator. If not, supporters are refunded.
           </p>
           <div className="mt-10 flex gap-4">
             <Link
@@ -32,7 +32,7 @@ export default function Home() {
               href="/demo/oracle-proof"
               className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
             >
-              Oracle Demo
+              Live Oracle Demo
             </Link>
           </div>
         </div>

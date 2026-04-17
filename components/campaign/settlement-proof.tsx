@@ -47,7 +47,7 @@ export function SettlementProof({ result, oracleStatus, fallbackReason }: Settle
                 : "text-amber-400"
             }`}
           >
-            {result.outcome === "funded" ? "Funds Released" : "Backers Refunded"}
+            {result.outcome === "funded" ? "Funds Released" : "Supporters Refunded"}
           </span>
         </div>
       </div>
