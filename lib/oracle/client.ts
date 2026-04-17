@@ -1,9 +1,28 @@
-import type { OraclePrice } from "./types";
+import type { OracleResult } from "./types";
+import { getOracleConfig, isLiveConfigured } from "./config";
 import { getMockPrice } from "./mock";
+import { fetchCharli3Price } from "./charli3";
 
-// Oracle client abstraction.
-// Currently returns mock data. The live implementation will query
-// Charli3 on-chain feed data via Ogmios/Kupo.
-export async function fetchAdaUsdPrice(): Promise<OraclePrice> {
-  return getMockPrice();
+export async function fetchAdaUsdPrice(): Promise<OracleResult> {
+  const config = getOracleConfig();
+
+  if (!isLiveConfigured(config)) {
+    return {
+      price: getMockPrice(),
+      status: "mock",
+    };
+  }
+
+  const result = await fetchCharli3Price(config);
+
+  // If live fetch failed, fall back to mock with the reason preserved
+  if (result.status === "fallback") {
+    return {
+      price: getMockPrice(),
+      status: "fallback",
+      fallbackReason: result.fallbackReason,
+    };
+  }
+
+  return result;
 }

@@ -4,7 +4,7 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { SettlementProof } from "@/components/campaign/settlement-proof";
 import { SettlementResultBanner } from "@/components/campaign/settlement-result";
 import { getDemoCampaign } from "@/lib/domain/demo-data";
-import { getMockPrice } from "@/lib/oracle/mock";
+import { fetchAdaUsdPrice } from "@/lib/oracle/client";
 import { buildSettlementInput } from "@/lib/oracle/settlement";
 import { resolveCampaignSettlement } from "@/lib/domain/settlement";
 
@@ -20,11 +20,11 @@ export default async function CloseCampaignPage({ params }: Props) {
     notFound();
   }
 
-  const oracle = getMockPrice();
+  const oracle = await fetchAdaUsdPrice();
   const input = buildSettlementInput(
     campaign.goalUsd,
     campaign.pledgedAda,
-    oracle,
+    oracle.price,
   );
   const result = resolveCampaignSettlement(input);
 
@@ -48,7 +48,11 @@ export default async function CloseCampaignPage({ params }: Props) {
 
         <div className="mt-8 space-y-6">
           <SettlementResultBanner result={result} />
-          <SettlementProof result={result} />
+          <SettlementProof
+            result={result}
+            oracleStatus={oracle.status}
+            fallbackReason={oracle.fallbackReason}
+          />
         </div>
       </div>
     </SiteShell>

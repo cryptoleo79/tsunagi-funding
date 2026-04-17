@@ -17,22 +17,54 @@ gives a verifiable, on-chain price that both parties can trust at settlement
 time. This removes the need for either side to trust a centralized price
 source.
 
+## Integration path
+
+The oracle layer queries the Charli3 ADA/USD feed via Kupo:
+
+1. Kupo indexes the Cardano chain and exposes a REST API for UTxO queries
+2. The adapter queries UTxOs at the Charli3 oracle address, filtered by policy ID
+3. The most recent UTxO is selected (highest slot)
+4. The inline datum is fetched and decoded from CBOR (Plutus data format)
+5. A heuristic decoder tries known Charli3 datum layouts to extract price and timestamp
+6. If decoding succeeds, the live price is returned
+7. If any step fails, the system falls back to mock data with an explicit reason
+
+## File structure
+
+- `lib/oracle/config.ts` — reads environment variables, determines oracle mode
+- `lib/oracle/types.ts` — OraclePrice, OracleResult, Kupo response types
+- `lib/oracle/decode.ts` — minimal Plutus CBOR decoder for datum extraction
+- `lib/oracle/charli3.ts` — Kupo fetch, datum decode, price extraction
+- `lib/oracle/client.ts` — mode switching (live vs mock) with fallback
+- `lib/oracle/mock.ts` — static demo prices
+- `lib/oracle/settlement.ts` — bridges oracle output into domain settlement
+- `app/api/oracle/route.ts` — HTTP endpoint for client-side oracle queries
+
+## Configuration
+
+Set these environment variables in `.env.local`:
+
+```
+NEXT_PUBLIC_ORACLE_MODE=live
+NEXT_PUBLIC_KUPO_URL=https://your-kupo-endpoint
+NEXT_PUBLIC_CHARLI3_ADDRESS=addr_test1...
+NEXT_PUBLIC_CHARLI3_POLICY_ID=abc123...
+```
+
+When mode is `mock` or when env vars are missing, the system uses
+hardcoded demo prices and labels them clearly as mock data.
+
 ## Current state
 
-The oracle layer is structured as:
+- Kupo query path: implemented
+- CBOR datum decoder: implemented (handles integers, byte strings, arrays, maps, constructors)
+- Price extraction: heuristic, tries multiple known Charli3 datum layouts
+- Fallback: graceful, with explicit reason shown in the UI
+- Live validation: depends on correct Charli3 address/policy ID and accessible Kupo endpoint
 
-- `lib/oracle/types.ts` — shared types for oracle price data
-- `lib/oracle/mock.ts` — returns realistic sample prices for the demo
-- `lib/oracle/client.ts` — abstraction that will switch between mock and live
-- `lib/oracle/charli3.ts` — placeholder for the live Charli3 adapter
-- `lib/oracle/settlement.ts` — bridges oracle output into domain settlement input
+## What is not yet done
 
-## Live integration path
-
-The Charli3 adapter will:
-
-1. Connect to a Cardano node via Ogmios or Kupo
-2. Query the feed UTxO by Charli3 policy ID and oracle address
-3. Decode the inline datum to extract the price and timestamp
-4. Validate freshness (reject stale prices beyond a configured window)
-5. Return a structured `OraclePrice` for the settlement function
+- Datum format has not been validated against a real Charli3 preprod UTxO
+- Ogmios is not used yet (Kupo is sufficient for reading feed state)
+- Price staleness validation (rejecting prices older than a threshold)
+- On-chain settlement transactions

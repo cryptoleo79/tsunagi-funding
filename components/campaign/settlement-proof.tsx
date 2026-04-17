@@ -1,17 +1,29 @@
 import type { SettlementResult } from "@/lib/domain/types";
+import type { OracleStatus } from "@/lib/oracle/types";
 import { formatAda, formatUsd, formatAdaUsd } from "@/lib/domain/format";
 import { formatTimestamp } from "@/lib/utils/dates";
+import { Chip } from "@/components/ui/chip";
 
 interface SettlementProofProps {
   result: SettlementResult;
+  oracleStatus?: OracleStatus;
+  fallbackReason?: string;
 }
 
-export function SettlementProof({ result }: SettlementProofProps) {
+export function SettlementProof({ result, oracleStatus, fallbackReason }: SettlementProofProps) {
   return (
     <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-      <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-500 mb-4">
-        Settlement Proof
-      </h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          Settlement Proof
+        </h3>
+        {oracleStatus && (
+          <Chip
+            label={oracleStatus === "live" ? "Live" : oracleStatus === "mock" ? "Mock" : "Fallback"}
+            variant={oracleStatus === "live" ? "success" : "default"}
+          />
+        )}
+      </div>
 
       <div className="space-y-3 text-sm">
         <Row label="Oracle Feed" value="ADA/USD" />
@@ -40,7 +52,15 @@ export function SettlementProof({ result }: SettlementProofProps) {
         </div>
       </div>
 
-      <div className="mt-6 rounded-lg bg-zinc-800/50 p-4">
+      {fallbackReason && (
+        <div className="mt-4 rounded-lg bg-amber-950/20 border border-amber-900/30 p-3">
+          <p className="text-xs text-amber-500">
+            Using mock price. Reason: {fallbackReason}
+          </p>
+        </div>
+      )}
+
+      <div className="mt-4 rounded-lg bg-zinc-800/50 p-4">
         <p className="text-xs text-zinc-500 font-mono break-all">
           tx: (pending on-chain settlement)
         </p>

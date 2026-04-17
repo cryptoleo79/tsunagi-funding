@@ -30,18 +30,19 @@ TSUNAGI means "to connect" in Japanese. This platform connects:
 ## Current status
 
 This is a hackathon build. The core domain logic, settlement engine, and
-frontend are functional. The oracle layer currently uses mock data, with
-the integration surface prepared for Charli3.
+frontend are functional.
 
 What works:
 - Homepage with campaign listings
 - Campaign creation form (demo mode)
-- Campaign detail page with oracle rate panel
-- Settlement page with outcome and proof display
-- Interactive oracle demo page with adjustable parameters
+- Campaign detail page with live/mock oracle rate panel
+- Settlement page with outcome, proof display, and oracle status
+- Interactive oracle demo page with live fetch and adjustable parameters
+- Charli3 integration path: Kupo query, CBOR datum decode, price extraction
+- Graceful fallback to mock data when live feed is unavailable
 
 What is planned:
-- Live Charli3 ADA/USD feed via Ogmios/Kupo
+- Validate datum decode against a real Charli3 preprod UTxO
 - Cardano wallet connection (CIP-30)
 - On-chain pledge and settlement transactions
 - Smart contract for escrow logic
@@ -49,13 +50,28 @@ What is planned:
 ## Local setup
 
 ```bash
-git clone <repo-url>
+git clone https://github.com/cryptoleo79/tsunagi-funding.git
 cd tsunagi-funding
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
 Open http://localhost:3000.
+
+### Oracle configuration
+
+To enable live oracle data, edit `.env.local`:
+
+```
+NEXT_PUBLIC_ORACLE_MODE=live
+NEXT_PUBLIC_KUPO_URL=https://your-kupo-endpoint
+NEXT_PUBLIC_CHARLI3_ADDRESS=addr_test1...
+NEXT_PUBLIC_CHARLI3_POLICY_ID=abc123...
+```
+
+When mode is `mock` or env vars are missing, the app uses demo prices
+and labels them clearly.
 
 ## Routes
 
@@ -66,17 +82,23 @@ Open http://localhost:3000.
 | `/campaigns/[id]` | Campaign detail with pledge panel and oracle rate |
 | `/campaigns/[id]/close` | Settlement page with oracle proof |
 | `/demo/oracle-proof` | Interactive oracle settlement demo |
+| `/api/oracle` | Oracle price API (JSON) |
 
 ## Oracle integration
 
-See [docs/oracle-notes.md](docs/oracle-notes.md) for the integration plan.
+See [docs/oracle-notes.md](docs/oracle-notes.md) for the full integration path.
 
-The oracle surface is in `lib/oracle/`:
-- `types.ts` — oracle price types
-- `mock.ts` — demo price data
-- `client.ts` — abstraction over mock and live sources
-- `charli3.ts` — placeholder for the live Charli3 adapter
-- `settlement.ts` — bridges oracle data into domain settlement
+The oracle layer in `lib/oracle/`:
+
+| File | Role |
+|---|---|
+| `config.ts` | Reads env vars, determines oracle mode |
+| `types.ts` | OraclePrice, OracleResult, Kupo response types |
+| `decode.ts` | Minimal Plutus CBOR decoder for datum extraction |
+| `charli3.ts` | Kupo fetch, datum decode, price extraction |
+| `client.ts` | Mode switching (live/mock) with graceful fallback |
+| `mock.ts` | Static demo prices |
+| `settlement.ts` | Bridges oracle output into domain settlement |
 
 ## Hackathon notes
 
@@ -86,7 +108,7 @@ for details on what is pre-existing background and what was built new.
 
 ## Next steps
 
-1. Connect Charli3 ADA/USD on-chain feed
+1. Validate Charli3 datum decode against real preprod feed data
 2. Add CIP-30 wallet connection for pledge transactions
 3. Build escrow smart contract for holding and releasing pledged ADA
 4. Persist campaigns to a database or on-chain state
