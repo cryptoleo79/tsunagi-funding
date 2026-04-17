@@ -8,7 +8,7 @@ export default function NewCampaignPage() {
         <h1 className="text-2xl font-semibold text-zinc-100">
           Create a Campaign
         </h1>
-        <p className="mt-2 text-sm text-zinc-400 max-w-md leading-relaxed">
+        <p className="mt-2 text-sm text-zinc-500 max-w-md leading-relaxed">
           Set your funding goal in USD. Supporters back your campaign in ADA.
           At close, the live Charli3 ADA/USD oracle determines whether
           the goal was met.

@@ -11,9 +11,9 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
   const oracle = await fetchAdaUsdPrice();
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
           Live Oracle Rate
         </h3>
         <Chip
@@ -31,7 +31,7 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
         {oracle.price.source}
       </p>
       {oracle.fallbackReason && (
-        <p className="mt-1 text-xs text-amber-600">
+        <p className="mt-1 text-xs text-amber-500/80">
           Fallback: {oracle.fallbackReason}
         </p>
       )}
@@ -51,9 +51,9 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
         </button>
       </div>
 
-      <p className="mt-4 text-xs text-zinc-600 leading-relaxed">
-        Settlement uses the live Charli3 ADA/USD price on Cardano preprod
-        to determine whether pledged ADA meets the campaign goal.
+      <p className="mt-5 text-xs text-zinc-600 leading-relaxed">
+        At close, the live Charli3 ADA/USD price determines whether
+        pledged ADA meets the campaign goal in USD.
       </p>
     </div>
   );

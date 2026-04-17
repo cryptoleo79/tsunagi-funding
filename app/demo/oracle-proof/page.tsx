@@ -57,21 +57,22 @@ export default function OracleProofPage() {
   return (
     <SiteShell>
       <div className="mx-auto max-w-3xl px-6 py-16">
-        {/* 1. Hero proof */}
+        {/* Header */}
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold text-zinc-100">
             Live Oracle Proof
           </h1>
           <StatusChip status={live.status} loading={live.loading} />
         </div>
-        <p className="mt-3 text-sm text-zinc-400 max-w-xl leading-relaxed">
+        <p className="mt-3 text-sm text-zinc-500 max-w-xl leading-relaxed">
           The live Charli3 ADA/USD oracle on Cardano preprod determines
-          whether a campaign&rsquo;s funds are released to the creator or
-          refunded to supporters at close.
+          whether funds are released to the creator or returned to
+          supporters at campaign close.
         </p>
 
-        <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
-          <div className="flex items-center justify-between mb-5">
+        {/* Oracle price card */}
+        <div className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6">
+          <div className="flex items-center justify-between mb-6">
             <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
               Current Oracle Price
             </h3>
@@ -87,48 +88,31 @@ export default function OracleProofPage() {
           {live.loading ? (
             <p className="text-sm text-zinc-500">Fetching live price...</p>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-5">
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-semibold text-zinc-100">
+                <span className="text-3xl font-semibold text-zinc-100 tabular-nums">
                   {live.price > 0 ? formatAdaUsd(live.price) : "—"}
                 </span>
                 <span className="text-sm text-zinc-500">ADA/USD</span>
               </div>
               <div className="grid gap-3 sm:grid-cols-2 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Mode</span>
-                  <span className="text-zinc-300">
-                    {live.status === "live" ? "Live" : live.status === "fallback" ? "Fallback" : "Mock"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Feed</span>
-                  <span className="text-zinc-300">ADA/USD</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Source</span>
-                  <span className="text-zinc-300">{live.source || "—"}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Raw Integer</span>
-                  <span className="font-mono text-zinc-300">
-                    {live.price > 0 ? Math.round(live.price * 1e6).toString() : "—"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Precision</span>
-                  <span className="font-mono text-zinc-300">
-                    {live.status === "live" ? "1e6" : "—"}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-zinc-500">Timestamp</span>
-                  <span className="text-zinc-300">
-                    {live.timestamp
-                      ? new Date(live.timestamp).toLocaleString()
-                      : "—"}
-                  </span>
-                </div>
+                <Row label="Mode" value={live.status === "live" ? "Live" : live.status === "fallback" ? "Fallback" : "Mock"} />
+                <Row label="Feed" value="ADA/USD" />
+                <Row label="Source" value={live.source || "—"} />
+                <Row
+                  label="Raw Integer"
+                  value={live.price > 0 ? Math.round(live.price * 1e6).toString() : "—"}
+                  mono
+                />
+                <Row
+                  label="Precision"
+                  value={live.status === "live" ? "1e6" : "—"}
+                  mono
+                />
+                <Row
+                  label="Timestamp"
+                  value={live.timestamp ? new Date(live.timestamp).toLocaleString() : "—"}
+                />
               </div>
             </div>
           )}
@@ -138,25 +122,20 @@ export default function OracleProofPage() {
               Error: {live.error}
             </p>
           )}
-        </div>
 
-        {/* 2. Settlement meaning */}
-        <div className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
-          <p className="text-sm text-zinc-400 leading-relaxed">
-            This live price is used at campaign close to determine whether
-            funds are released to the creator or refunded to supporters.
-            The oracle is the settlement authority &mdash; not a display
-            widget.
+          <p className="mt-6 text-xs text-zinc-600 leading-relaxed border-t border-zinc-800/60 pt-5">
+            This price is the settlement authority — not a display widget.
+            At campaign close it determines whether funds are released or
+            supporters are refunded.
           </p>
         </div>
 
-        {/* 3. Two canned result cards */}
-        <h2 className="mt-12 text-lg font-semibold text-zinc-100">
+        {/* Outcome examples */}
+        <h2 className="mt-14 text-lg font-semibold text-zinc-100">
           Settlement Outcomes
         </h2>
-        <p className="mt-1 text-sm text-zinc-500">
-          Two scenarios showing how the same campaign resolves at different
-          ADA/USD rates.
+        <p className="mt-2 text-sm text-zinc-500">
+          Same campaign, different ADA/USD rates — two possible outcomes.
         </p>
 
         <div className="mt-6 grid gap-6 sm:grid-cols-2">
@@ -174,40 +153,20 @@ export default function OracleProofPage() {
           />
         </div>
 
-        {/* 4. Technical details */}
-        <details className="mt-12 group">
+        {/* Technical details */}
+        <details className="mt-14 group">
           <summary className="cursor-pointer text-xs font-medium uppercase tracking-wider text-zinc-600 hover:text-zinc-400 transition-colors">
             Technical Details
           </summary>
           <div className="mt-4 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-5">
             <div className="grid gap-3 sm:grid-cols-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-zinc-600">Datum Format</span>
-                <span className="font-mono text-zinc-400">
-                  Plutus CBOR (ODV)
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-600">Network</span>
-                <span className="font-mono text-zinc-400">
-                  Cardano preprod
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-600">Indexer</span>
-                <span className="font-mono text-zinc-400">
-                  Kupo REST API
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-zinc-600">Oracle Provider</span>
-                <span className="font-mono text-zinc-400">
-                  Charli3
-                </span>
-              </div>
+              <Row label="Datum Format" value="Plutus CBOR (ODV)" mono />
+              <Row label="Network" value="Cardano preprod" mono />
+              <Row label="Indexer" value="Kupo REST API" mono />
+              <Row label="Oracle Provider" value="Charli3" mono />
             </div>
             {live.fallbackReason && (
-              <p className="mt-3 text-xs text-amber-500 border-t border-zinc-800 pt-3">
+              <p className="mt-4 text-xs text-amber-500/80 border-t border-zinc-800/60 pt-3">
                 Fallback reason: {live.fallbackReason}
               </p>
             )}
@@ -272,8 +231,8 @@ function OutcomeCard({
     <div
       className={`rounded-xl border p-5 ${
         funded
-          ? "border-emerald-800/40 bg-emerald-950/20"
-          : "border-amber-800/40 bg-amber-950/20"
+          ? "border-emerald-800/30 bg-emerald-950/20"
+          : "border-amber-800/30 bg-amber-950/20"
       }`}
     >
       <h3
@@ -286,14 +245,14 @@ function OutcomeCard({
       <p className="mt-1 text-xs text-zinc-500">
         {funded
           ? "Goal met — ADA released to creator"
-          : "Goal missed — ADA returned to supporters"}
+          : "Goal not met — ADA returned to supporters"}
       </p>
       <div className="mt-4 space-y-2 text-sm">
         <Row label="Oracle Price" value={formatAdaUsd(oraclePrice)} />
-        <Row label="Pledged" value={formatAda(pledgedAda)} />
-        <Row label="USD Equivalent" value={formatUsd(usdRaised)} />
+        <Row label="Backed" value={formatAda(pledgedAda)} />
+        <Row label="USD Value" value={formatUsd(usdRaised)} />
         <Row label="Goal" value={formatUsd(goalUsd)} />
-        <div className="border-t border-zinc-800 pt-2 flex justify-between">
+        <div className="border-t border-zinc-800/60 pt-2 flex justify-between">
           <span className="text-zinc-500">Outcome</span>
           <span
             className={`font-medium ${
@@ -308,11 +267,11 @@ function OutcomeCard({
   );
 }
 
-function Row({ label, value }: { label: string; value: string }) {
+function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex justify-between">
       <span className="text-zinc-500">{label}</span>
-      <span className="text-zinc-200">{value}</span>
+      <span className={`text-zinc-300 ${mono ? "font-mono" : ""}`}>{value}</span>
     </div>
   );
 }

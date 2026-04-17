@@ -19,48 +19,49 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
   return (
     <Link
       href={`/campaigns/${campaign.id}`}
-      className="group block rounded-xl border border-zinc-800 bg-zinc-900 p-6 transition-colors hover:border-zinc-700"
+      className="group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 transition-all hover:border-zinc-700 hover:bg-zinc-900"
     >
-      <div className="flex items-start justify-between">
-        <h3 className="text-lg font-medium text-zinc-100 group-hover:text-white">
-          {campaign.title}
-        </h3>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h3 className="text-base font-medium text-zinc-100 leading-snug group-hover:text-white">
+            {campaign.title}
+          </h3>
+          <p className="mt-1 text-xs text-zinc-500">
+            by {campaign.creatorName}
+          </p>
+        </div>
         <Chip
           label={campaign.status === "active" ? "Active" : "Closed"}
           variant={campaign.status === "active" ? "success" : "default"}
         />
       </div>
 
-      <p className="mt-2 text-sm text-zinc-400 line-clamp-2">
+      <p className="mt-3 text-sm text-zinc-400 leading-relaxed line-clamp-2">
         {campaign.description}
       </p>
 
-      <div className="mt-5">
+      <div className="mt-auto pt-5">
         <div className="flex justify-between text-sm">
-          <span className="text-zinc-400">
-            {formatUsd(usdRaised)} raised of {formatUsd(campaign.goalUsd)}
+          <span className="text-zinc-300">
+            {formatUsd(usdRaised)} <span className="text-zinc-500">of {formatUsd(campaign.goalUsd)}</span>
           </span>
           <span className="text-zinc-500">{formatPercent(progress)}</span>
         </div>
         <div className="mt-2 h-1.5 rounded-full bg-zinc-800">
           <div
-            className="h-full rounded-full bg-emerald-500 transition-all"
+            className="h-full rounded-full bg-emerald-500/80 transition-all"
             style={{ width: `${Math.min(progress * 100, 100).toFixed(1)}%` }}
           />
         </div>
-      </div>
-
-      <div className="mt-4 flex items-center justify-between text-sm text-zinc-500">
-        <span>{formatAda(campaign.pledgedAda)} pledged</span>
-        <span>
-          {remaining > 0 ? `${remaining} days left` : "Campaign ended"}
-        </span>
-      </div>
-
-      <div className="mt-3 flex items-center gap-3 text-xs text-zinc-600">
-        <span>{campaign.supporterCount} supporters</span>
-        <span>&middot;</span>
-        <span>by {campaign.creatorName}</span>
+        <div className="mt-3 flex items-center justify-between text-xs text-zinc-500">
+          <span>{formatAda(campaign.pledgedAda)} pledged</span>
+          <span>
+            {remaining > 0 ? `${remaining} days left` : "Campaign ended"}
+          </span>
+        </div>
+        <div className="mt-2 text-xs text-zinc-600">
+          {campaign.supporterCount} supporters
+        </div>
       </div>
     </Link>
   );

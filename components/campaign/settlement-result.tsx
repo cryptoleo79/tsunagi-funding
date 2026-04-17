@@ -15,7 +15,7 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
     : 0;
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6 sm:p-8">
+    <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 sm:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
@@ -29,20 +29,20 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
         )}
       </div>
 
-      {/* Step 1–3: Inputs */}
-      <div className="space-y-4">
-        <MathRow step="1" label="Goal" value={formatUsd(result.goalUsd)} />
-        <MathRow step="2" label="Backed" value={formatAda(result.pledgedAda)} />
+      {/* Inputs */}
+      <div className="space-y-3">
+        <MathRow step="1" label="Goal in USD" value={formatUsd(result.goalUsd)} />
+        <MathRow step="2" label="Backed in ADA" value={formatAda(result.pledgedAda)} />
         <MathRow step="3" label="Live ADA/USD" value={formatAdaUsd(result.adaUsdPrice)} />
       </div>
 
-      <div className="my-6 border-t border-zinc-800" />
+      <div className="my-7 border-t border-zinc-800/60" />
 
-      {/* Step 4: Calculation */}
+      {/* Calculation */}
       <div>
         <div className="flex items-baseline justify-between">
           <span className="text-sm text-zinc-400">USD Value at Close</span>
-          <span className="text-2xl font-semibold text-zinc-100">
+          <span className="text-2xl font-semibold text-zinc-100 tabular-nums">
             {formatUsd(result.usdRaised)}
           </span>
         </div>
@@ -52,46 +52,46 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
       </div>
 
       {/* Threshold bar */}
-      <div className="mt-6 mb-2">
-        <div className="h-3 rounded-full bg-zinc-800 overflow-hidden">
+      <div className="mt-5">
+        <div className="h-2.5 rounded-full bg-zinc-800 overflow-hidden">
           <div
             className={`h-full rounded-full ${
-              funded ? "bg-emerald-500" : "bg-amber-500"
+              funded ? "bg-emerald-500/80" : "bg-amber-500/80"
             }`}
             style={{ width: `${fillPercent.toFixed(1)}%` }}
           />
         </div>
         <div className="mt-1.5 flex justify-between text-xs">
-          <span className={funded ? "text-emerald-500" : "text-amber-500"}>
+          <span className={funded ? "text-emerald-500/80" : "text-amber-500/80"}>
             {formatUsd(result.usdRaised)} raised
           </span>
-          <span className="text-zinc-500">
+          <span className="text-zinc-600">
             {formatUsd(result.goalUsd)} goal
           </span>
         </div>
       </div>
 
-      <div className="my-6 border-t border-zinc-800" />
+      <div className="my-7 border-t border-zinc-800/60" />
 
-      {/* Step 5: Verdict */}
+      {/* Verdict */}
       <div
         className={`rounded-xl p-5 ${
           funded
-            ? "bg-emerald-950/40 border border-emerald-800/40"
-            : "bg-amber-950/40 border border-amber-800/40"
+            ? "bg-emerald-950/30 border border-emerald-800/30"
+            : "bg-amber-950/30 border border-amber-800/30"
         }`}
       >
         <div className="flex items-center gap-3">
           <div
-            className={`flex h-11 w-11 items-center justify-center rounded-full text-xl ${
-              funded ? "bg-emerald-900/60 text-emerald-300" : "bg-amber-900/60 text-amber-300"
+            className={`flex h-10 w-10 items-center justify-center rounded-full text-lg shrink-0 ${
+              funded ? "bg-emerald-900/50 text-emerald-300" : "bg-amber-900/50 text-amber-300"
             }`}
           >
             {funded ? "\u2713" : "\u21A9"}
           </div>
           <div>
             <h3
-              className={`text-xl font-bold tracking-tight ${
+              className={`text-lg font-bold tracking-tight sm:text-xl ${
                 funded ? "text-emerald-300" : "text-amber-300"
               }`}
             >
@@ -129,7 +129,7 @@ function MathRow({
         </span>
         <span className="text-sm text-zinc-400">{label}</span>
       </div>
-      <span className="text-sm font-medium text-zinc-200">{value}</span>
+      <span className="text-sm font-medium text-zinc-200 tabular-nums">{value}</span>
     </div>
   );
 }

@@ -28,11 +28,11 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
         </span>
       </div>
 
-      <h1 className="text-3xl font-semibold text-zinc-100">
+      <h1 className="text-2xl font-semibold text-zinc-100 sm:text-3xl">
         {campaign.title}
       </h1>
 
-      <p className="mt-4 text-zinc-400 max-w-2xl leading-relaxed">
+      <p className="mt-4 text-sm text-zinc-400 max-w-2xl leading-relaxed">
         {campaign.description}
       </p>
 
@@ -45,7 +45,7 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
         </div>
         <div className="h-2 rounded-full bg-zinc-800">
           <div
-            className="h-full rounded-full bg-emerald-500 transition-all"
+            className="h-full rounded-full bg-emerald-500/80 transition-all"
             style={{ width: `${Math.min(progress * 100, 100).toFixed(1)}%` }}
           />
         </div>
@@ -62,12 +62,10 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
         />
       </div>
 
-      <div className="mt-8 rounded-lg border border-zinc-800/60 bg-zinc-900/40 p-4">
-        <p className="text-xs text-zinc-500 leading-relaxed">
-          Campaign display values are estimated for readability. Final
-          settlement is determined at close using the live Charli3 oracle.
-        </p>
-      </div>
+      <p className="mt-8 text-xs text-zinc-600 leading-relaxed">
+        Campaign display values are estimated for readability. Final
+        settlement is determined at close using the live Charli3 oracle.
+      </p>
     </div>
   );
 }

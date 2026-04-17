@@ -41,12 +41,12 @@ export default async function CloseCampaignPage({ params }: Props) {
         <h1 className="mt-6 text-2xl font-semibold text-zinc-100">
           {campaign.title}
         </h1>
-        <p className="mt-2 text-sm text-zinc-400">
+        <p className="mt-2 text-sm text-zinc-500">
           Settlement determined by the live Charli3 ADA/USD oracle on
           Cardano preprod.
         </p>
 
-        <div className="mt-8 space-y-6">
+        <div className="mt-10 space-y-8">
           <SettlementResultBanner
             result={result}
             oracleStatus={oracle.status}
