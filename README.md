@@ -2,50 +2,83 @@
 
 **Connecting People Through ADA Funding**
 
-Oracle-native crowdfunding on Cardano. Creators set a campaign goal in USD,
-supporters pledge in ADA, and at campaign close a live Charli3 ADA/USD oracle
-rate determines whether the goal was met.
-
-If `pledged_ada * ada_usd_price >= goal_usd`, funds are released to the creator.
-Otherwise, backers are refunded.
+TSUNAGI Funding is an oracle-native crowdfunding prototype on Cardano.
+Creators raise in ADA against a USD-denominated goal, and at campaign close
+a live Charli3 ADA/USD oracle determines whether the campaign succeeded or
+whether supporters are refunded.
 
 ## Why the oracle matters
 
-Crowdfunding goals are naturally expressed in USD (or fiat), but Cardano
-supporters pledge in ADA. The ADA/USD exchange rate moves. Without an oracle,
-there is no trustworthy way to determine whether a campaign actually met its
-USD target at the time of settlement.
+Crowdfunding goals are naturally expressed in USD, but supporters pledge in
+ADA. The ADA/USD exchange rate moves between the time a campaign launches
+and when it closes. Without an oracle, there is no trustworthy way to
+determine whether a campaign actually met its USD target.
 
-Charli3 provides a decentralized, on-chain ADA/USD price feed. TSUNAGI Funding
-uses this feed as the bridge between on-chain funding and real-world value.
-
-## Product concept
-
-TSUNAGI means "to connect" in Japanese. This platform connects:
-
-- **Creators** who need funding for projects, content, and tools
-- **Supporters** who back campaigns with ADA
-- **The oracle** which bridges on-chain value and real-world pricing at settlement
+The oracle is not decorative — it is the mechanism that decides whether funds
+are released to the creator or returned to backers. TSUNAGI Funding reads
+the Charli3 ADA/USD price feed directly from the Cardano chain via Kupo and
+uses it as the settlement authority.
 
 ## Current status
 
-This is a hackathon build. The core domain logic, settlement engine, and
-frontend are functional.
+This is a hackathon prototype. The core domain logic, settlement engine,
+live oracle integration, and frontend are functional.
 
-What works:
-- Homepage with campaign listings
-- Campaign creation form (demo mode)
-- Campaign detail page with live/mock oracle rate panel
-- Settlement page with outcome, proof display, and oracle status
-- Interactive oracle demo page with live fetch and adjustable parameters
-- Charli3 integration path: Kupo query, CBOR datum decode, price extraction
-- Graceful fallback to mock data when live feed is unavailable
+- **Live Charli3 ADA/USD oracle integration is working on preprod**
+- `/api/oracle` returns live price data from the on-chain Charli3 feed
+- The settlement flow uses live oracle data to determine campaign outcomes
+- The frontend is demo-ready but still prototype-stage
+- If the live feed is unavailable, the app falls back to mock data with an
+  explicit reason shown in the UI
 
-What is planned:
-- Validate datum decode against a real Charli3 preprod UTxO
-- Cardano wallet connection (CIP-30)
-- On-chain pledge and settlement transactions
-- Smart contract for escrow logic
+## Verified live oracle milestone
+
+The live oracle path has been verified against real Charli3 preprod data:
+
+| Field | Value |
+|---|---|
+| Status | `live` |
+| Price | $0.256299 |
+| Raw integer | 256299 |
+| Precision | 1e6 (price = raw / 1,000,000) |
+| Source | Charli3 ADA/USD preprod (ODV feed) |
+| Datum format | Plutus CBOR, decoded from the real on-chain datum |
+
+The datum structure (`Constr → Constr → Map`) is decoded from the actual
+Charli3 ODV contract output, not simulated.
+
+## Architecture at a glance
+
+```mermaid
+flowchart LR
+    A[Creator sets USD goal] --> B[Supporters pledge ADA]
+    B --> C[Campaign closes]
+    C --> D[Charli3 ADA/USD oracle]
+    D --> E{Goal met?}
+    E -- Yes --> F[Funds released]
+    E -- No --> G[Backers refunded]
+```
+
+## Product flow
+
+1. Creator sets a campaign with a USD-denominated funding goal
+2. Supporters pledge ADA to the campaign
+3. Campaign reaches its close date
+4. The app fetches the current ADA/USD price from the Charli3 on-chain feed
+5. `pledged_ada * ada_usd_price` is compared to `goal_usd`
+6. If the goal is met, funds are released to the creator
+7. If not, pledges are returned to backers
+
+## Routes
+
+| Route | Description |
+|---|---|
+| `/` | Homepage with campaign cards and product overview |
+| `/campaigns/new` | Create a new campaign (demo mode) |
+| `/campaigns/[id]` | Campaign detail with pledge panel and live oracle rate |
+| `/campaigns/[id]/close` | Settlement page with oracle proof and outcome |
+| `/demo/oracle-proof` | Interactive oracle demo with live fetch |
+| `/api/oracle` | Oracle price API — returns live Charli3 data (JSON) |
 
 ## Local setup
 
@@ -59,34 +92,64 @@ npm run dev
 
 Open http://localhost:3000.
 
-### Oracle configuration
+## Environment variables
 
-To enable live oracle data, edit `.env.local`:
+Configure the oracle connection in `.env.local`:
 
-```
-NEXT_PUBLIC_ORACLE_MODE=live
-NEXT_PUBLIC_KUPO_URL=https://your-kupo-endpoint
-NEXT_PUBLIC_CHARLI3_ADDRESS=addr_test1...
-NEXT_PUBLIC_CHARLI3_POLICY_ID=abc123...
-```
+| Variable | Purpose | Example |
+|---|---|---|
+| `NEXT_PUBLIC_ORACLE_MODE` | `live` or `mock` | `live` |
+| `NEXT_PUBLIC_KUPO_URL` | Kupo indexer endpoint | `http://host:1442` |
+| `NEXT_PUBLIC_CHARLI3_ADDRESS` | Charli3 oracle address (preprod) | `addr_test1wq3pacs...` |
+| `NEXT_PUBLIC_CHARLI3_POLICY_ID` | Charli3 policy ID | `886dcb2363e160...` |
+| `NEXT_PUBLIC_ORACLE_FEED` | Feed name | `ADA/USD` |
+| `NEXT_PUBLIC_NETWORK` | Cardano network | `preprod` |
 
-When mode is `mock` or env vars are missing, the app uses demo prices
-and labels them clearly.
+When mode is `mock` or env vars are missing, the app uses demo prices and
+labels them clearly. When live mode is configured but the feed is
+unreachable, the app falls back with an explicit reason.
 
-## Routes
+## For judges
 
-| Route | Description |
-|---|---|
-| `/` | Homepage with campaign cards and product overview |
-| `/campaigns/new` | Create a new campaign (demo mode) |
-| `/campaigns/[id]` | Campaign detail with pledge panel and oracle rate |
-| `/campaigns/[id]/close` | Settlement page with oracle proof |
-| `/demo/oracle-proof` | Interactive oracle settlement demo |
-| `/api/oracle` | Oracle price API (JSON) |
+To verify the oracle integration:
+
+1. **`/api/oracle`** — hit this endpoint to see the raw JSON response from
+   the live Charli3 feed. Look for `"status": "live"` and a real price value.
+2. **`/demo/oracle-proof`** — this page shows the live oracle status panel
+   at the top, then lets you adjust parameters to see how settlement outcomes
+   change. Click "Refresh" to re-fetch the live price.
+3. **`/campaigns/1`** — a demo campaign showing the live ADA/USD rate in the
+   pledge panel.
+4. **`/campaigns/1/close`** — the settlement page that uses the live oracle
+   to determine whether the campaign goal was met.
+
+The oracle layer lives in `lib/oracle/`. The datum decoder in `decode.ts`
+handles real Plutus CBOR from the Charli3 ODV contract.
+
+## Hackathon scope
+
+**Pre-existing background:** TSUNAGI is a broader project exploring Cardano
+infrastructure, including a chain-following node written in Zig. That work
+is separate. The concept of oracle-native crowdfunding grew out of thinking
+about how on-chain price data could mediate real-world funding outcomes.
+
+**New work for this hackathon:** Everything in this repository was built
+from scratch:
+
+- Next.js application with TypeScript and Tailwind CSS
+- Domain model for campaigns, pledges, and settlement
+- Settlement logic using oracle price to determine release or refund
+- Live Charli3 ADA/USD integration via Kupo with Plutus CBOR datum decoding
+- Mock oracle layer with graceful fallback
+- Five pages: home, create campaign, campaign detail, settlement, oracle demo
+- Oracle API endpoint serving live on-chain data
+
+No code was carried over from other repositories.
 
 ## Oracle integration
 
-See [docs/oracle-notes.md](docs/oracle-notes.md) for the full integration path.
+See [docs/oracle-notes.md](docs/oracle-notes.md) for the full integration
+path.
 
 The oracle layer in `lib/oracle/`:
 
@@ -100,15 +163,8 @@ The oracle layer in `lib/oracle/`:
 | `mock.ts` | Static demo prices |
 | `settlement.ts` | Bridges oracle output into domain settlement |
 
-## Hackathon notes
-
-This repository is a fresh build for the hackathon. It is not the existing
-TSUNAGI node project. See [docs/hackathon-scope.md](docs/hackathon-scope.md)
-for details on what is pre-existing background and what was built new.
-
 ## Next steps
 
-1. Validate Charli3 datum decode against real preprod feed data
-2. Add CIP-30 wallet connection for pledge transactions
-3. Build escrow smart contract for holding and releasing pledged ADA
-4. Persist campaigns to a database or on-chain state
+1. Add CIP-30 wallet connection for pledge transactions
+2. Build escrow smart contract for holding and releasing pledged ADA
+3. Persist campaigns to a database or on-chain state
