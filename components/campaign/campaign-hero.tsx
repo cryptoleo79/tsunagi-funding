@@ -64,10 +64,8 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
 
       <div className="mt-8 rounded-lg border border-zinc-800/60 bg-zinc-900/40 p-4">
         <p className="text-xs text-zinc-500 leading-relaxed">
-          At campaign close, the live Charli3 ADA/USD oracle price on Cardano
-          preprod determines the USD equivalent of pledged ADA. If the goal is
-          met, funds are released to the creator. Otherwise, supporters are
-          refunded.
+          Campaign display values are estimated for readability. Final
+          settlement is determined at close using the live Charli3 oracle.
         </p>
       </div>
     </div>

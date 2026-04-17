@@ -47,7 +47,7 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
           disabled
           className="w-full rounded-lg border border-zinc-800 py-3 text-sm font-medium text-zinc-600 cursor-not-allowed"
         >
-          Pledge ADA (wallet coming soon)
+          Pledge ADA (demo mode)
         </button>
       </div>
 

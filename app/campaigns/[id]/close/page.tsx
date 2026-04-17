@@ -53,6 +53,12 @@ export default async function CloseCampaignPage({ params }: Props) {
             oracleStatus={oracle.status}
             fallbackReason={oracle.fallbackReason}
           />
+          <div className="rounded-lg border border-zinc-800/60 bg-zinc-900/40 p-4">
+            <p className="text-xs text-zinc-500 leading-relaxed">
+              Campaign display values are estimated for readability. Final
+              settlement is determined at close using the live Charli3 oracle.
+            </p>
+          </div>
         </div>
       </div>
     </SiteShell>

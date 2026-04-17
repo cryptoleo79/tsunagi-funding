@@ -26,9 +26,12 @@ export function SettlementProof({ result, oracleStatus, fallbackReason }: Settle
       </div>
 
       <div className="space-y-3 text-sm">
+        <Row label="Oracle Mode" value={oracleStatus === "live" ? "Live" : oracleStatus === "fallback" ? "Fallback" : "Mock"} />
         <Row label="Oracle Feed" value="ADA/USD" />
         <Row label="Oracle Source" value={result.oracleSource} />
         <Row label="ADA/USD Price" value={formatAdaUsd(result.adaUsdPrice)} />
+        <Row label="Raw Integer" value={Math.round(result.adaUsdPrice * 1e6).toString()} />
+        <Row label="Precision" value="1e6" />
         <Row label="Settlement Time" value={formatTimestamp(result.settledAt)} />
         <Divider />
         <Row label="Pledged ADA" value={formatAda(result.pledgedAda)} />

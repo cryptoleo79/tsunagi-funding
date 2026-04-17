@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { WalletButton } from "@/components/ui/wallet-button";
 
 export function SiteHeader() {
   return (
@@ -23,6 +24,7 @@ export function SiteHeader() {
           >
             Oracle Demo
           </Link>
+          <WalletButton />
         </nav>
       </div>
     </header>
