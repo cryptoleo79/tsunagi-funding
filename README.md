@@ -128,23 +128,11 @@ handles real Plutus CBOR from the Charli3 ODV contract.
 
 ## Hackathon scope
 
-**Pre-existing background:** TSUNAGI is a broader project exploring Cardano
-infrastructure, including a chain-following node written in Zig. That work
-is separate. The concept of oracle-native crowdfunding grew out of thinking
-about how on-chain price data could mediate real-world funding outcomes.
+### Pre-existing background
+TSUNAGI Funding uses the TSUNAGI name and concept of connection, but this repository is separate from the TSUNAGI node project.
 
-**New work for this hackathon:** Everything in this repository was built
-from scratch:
-
-- Next.js application with TypeScript and Tailwind CSS
-- Domain model for campaigns, pledges, and settlement
-- Settlement logic using oracle price to determine release or refund
-- Live Charli3 ADA/USD integration via Kupo with Plutus CBOR datum decoding
-- Mock oracle layer with graceful fallback
-- Five pages: home, create campaign, campaign detail, settlement, oracle demo
-- Oracle API endpoint serving live on-chain data
-
-No code was carried over from other repositories.
+### New work built for this hackathon
+Everything in this repository was built as a fresh hackathon project for oracle-native crowdfunding on Cardano, including the campaign flow, settlement UI, oracle API route, and live Charli3 ADA/USD integration.
 
 ## Oracle integration
 
