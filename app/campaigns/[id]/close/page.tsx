@@ -1,0 +1,56 @@
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { SiteShell } from "@/components/layout/site-shell";
+import { SettlementProof } from "@/components/campaign/settlement-proof";
+import { SettlementResultBanner } from "@/components/campaign/settlement-result";
+import { getDemoCampaign } from "@/lib/domain/demo-data";
+import { getMockPrice } from "@/lib/oracle/mock";
+import { buildSettlementInput } from "@/lib/oracle/settlement";
+import { resolveCampaignSettlement } from "@/lib/domain/settlement";
+
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default async function CloseCampaignPage({ params }: Props) {
+  const { id } = await params;
+  const campaign = getDemoCampaign(id);
+
+  if (!campaign) {
+    notFound();
+  }
+
+  const oracle = getMockPrice();
+  const input = buildSettlementInput(
+    campaign.goalUsd,
+    campaign.pledgedAda,
+    oracle,
+  );
+  const result = resolveCampaignSettlement(input);
+
+  return (
+    <SiteShell>
+      <div className="mx-auto max-w-2xl px-6 py-16">
+        <Link
+          href={`/campaigns/${campaign.id}`}
+          className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+        >
+          &larr; Back to campaign
+        </Link>
+
+        <h1 className="mt-6 text-2xl font-semibold text-zinc-100">
+          Settlement: {campaign.title}
+        </h1>
+        <p className="mt-2 text-sm text-zinc-400">
+          The oracle price at settlement determines whether the campaign
+          met its USD goal.
+        </p>
+
+        <div className="mt-8 space-y-6">
+          <SettlementResultBanner result={result} />
+          <SettlementProof result={result} />
+        </div>
+      </div>
+    </SiteShell>
+  );
+}

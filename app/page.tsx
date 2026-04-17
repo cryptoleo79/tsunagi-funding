@@ -1,65 +1,104 @@
-import Image from "next/image";
+import Link from "next/link";
+import { SiteShell } from "@/components/layout/site-shell";
+import { CampaignCard } from "@/components/campaign/campaign-card";
+import { demoCampaigns } from "@/lib/domain/demo-data";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <SiteShell>
+      {/* Hero */}
+      <section className="py-24 sm:py-32">
+        <div className="mx-auto max-w-5xl px-6">
+          <h1 className="text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl">
+            TSUNAGI Funding
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-2 text-lg text-zinc-400">
+            Connecting People Through ADA Funding
           </p>
+          <p className="mt-6 max-w-2xl text-zinc-500 leading-relaxed">
+            Oracle-native crowdfunding on Cardano. Creators set a goal in USD,
+            supporters pledge in ADA, and at campaign close a live Charli3
+            oracle rate determines whether the goal was met. Funded campaigns
+            release to the creator. Missed targets refund backers automatically.
+          </p>
+          <div className="mt-10 flex gap-4">
+            <Link
+              href="/campaigns/new"
+              className="rounded-lg bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-white"
+            >
+              Create a Campaign
+            </Link>
+            <Link
+              href="/demo/oracle-proof"
+              className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
+            >
+              Oracle Demo
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </section>
+
+      {/* How it works */}
+      <section className="border-t border-zinc-800 py-20">
+        <div className="mx-auto max-w-5xl px-6">
+          <h2 className="text-2xl font-semibold text-zinc-100">
+            How it works
+          </h2>
+          <div className="mt-10 grid gap-8 sm:grid-cols-3">
+            <Step
+              number="1"
+              title="Set a goal in USD"
+              description="Creators define their funding target in USD. The amount is fixed regardless of ADA price fluctuations."
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            <Step
+              number="2"
+              title="Back with ADA"
+              description="Supporters pledge ADA to campaigns they believe in. Pledges are held until the campaign closes."
+            />
+            <Step
+              number="3"
+              title="Oracle settles the outcome"
+              description="At close, the Charli3 ADA/USD price determines if pledged ADA meets the USD goal. Release or refund."
+            />
+          </div>
         </div>
-      </main>
+      </section>
+
+      {/* Campaigns */}
+      <section className="border-t border-zinc-800 py-20">
+        <div className="mx-auto max-w-5xl px-6">
+          <h2 className="text-2xl font-semibold text-zinc-100 mb-8">
+            Active Campaigns
+          </h2>
+          <div className="grid gap-6 sm:grid-cols-2">
+            {demoCampaigns.map((c) => (
+              <CampaignCard key={c.id} campaign={c} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </SiteShell>
+  );
+}
+
+function Step({
+  number,
+  title,
+  description,
+}: {
+  number: string;
+  title: string;
+  description: string;
+}) {
+  return (
+    <div>
+      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-700 text-sm font-medium text-zinc-400">
+        {number}
+      </div>
+      <h3 className="mt-4 text-sm font-medium text-zinc-200">{title}</h3>
+      <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+        {description}
+      </p>
     </div>
   );
 }

@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TSUNAGI Funding
 
-## Getting Started
+**Connecting People Through ADA Funding**
 
-First, run the development server:
+Oracle-native crowdfunding on Cardano. Creators set a campaign goal in USD,
+supporters pledge in ADA, and at campaign close a live Charli3 ADA/USD oracle
+rate determines whether the goal was met.
+
+If `pledged_ada * ada_usd_price >= goal_usd`, funds are released to the creator.
+Otherwise, backers are refunded.
+
+## Why the oracle matters
+
+Crowdfunding goals are naturally expressed in USD (or fiat), but Cardano
+supporters pledge in ADA. The ADA/USD exchange rate moves. Without an oracle,
+there is no trustworthy way to determine whether a campaign actually met its
+USD target at the time of settlement.
+
+Charli3 provides a decentralized, on-chain ADA/USD price feed. TSUNAGI Funding
+uses this feed as the bridge between on-chain funding and real-world value.
+
+## Product concept
+
+TSUNAGI means "to connect" in Japanese. This platform connects:
+
+- **Creators** who need funding for projects, content, and tools
+- **Supporters** who back campaigns with ADA
+- **The oracle** which bridges on-chain value and real-world pricing at settlement
+
+## Current status
+
+This is a hackathon build. The core domain logic, settlement engine, and
+frontend are functional. The oracle layer currently uses mock data, with
+the integration surface prepared for Charli3.
+
+What works:
+- Homepage with campaign listings
+- Campaign creation form (demo mode)
+- Campaign detail page with oracle rate panel
+- Settlement page with outcome and proof display
+- Interactive oracle demo page with adjustable parameters
+
+What is planned:
+- Live Charli3 ADA/USD feed via Ogmios/Kupo
+- Cardano wallet connection (CIP-30)
+- On-chain pledge and settlement transactions
+- Smart contract for escrow logic
+
+## Local setup
 
 ```bash
+git clone <repo-url>
+cd tsunagi-funding
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Route | Description |
+|---|---|
+| `/` | Homepage with campaign cards and product overview |
+| `/campaigns/new` | Create a new campaign (demo mode) |
+| `/campaigns/[id]` | Campaign detail with pledge panel and oracle rate |
+| `/campaigns/[id]/close` | Settlement page with oracle proof |
+| `/demo/oracle-proof` | Interactive oracle settlement demo |
 
-## Learn More
+## Oracle integration
 
-To learn more about Next.js, take a look at the following resources:
+See [docs/oracle-notes.md](docs/oracle-notes.md) for the integration plan.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The oracle surface is in `lib/oracle/`:
+- `types.ts` — oracle price types
+- `mock.ts` — demo price data
+- `client.ts` — abstraction over mock and live sources
+- `charli3.ts` — placeholder for the live Charli3 adapter
+- `settlement.ts` — bridges oracle data into domain settlement
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Hackathon notes
 
-## Deploy on Vercel
+This repository is a fresh build for the hackathon. It is not the existing
+TSUNAGI node project. See [docs/hackathon-scope.md](docs/hackathon-scope.md)
+for details on what is pre-existing background and what was built new.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Next steps
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Connect Charli3 ADA/USD on-chain feed
+2. Add CIP-30 wallet connection for pledge transactions
+3. Build escrow smart contract for holding and releasing pledged ADA
+4. Persist campaigns to a database or on-chain state

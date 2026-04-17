@@ -1,0 +1,25 @@
+# Charli3 oracle configuration
+# Copy to config.yaml and fill in real values.
+
+network: preview
+
+ogmios:
+  host: localhost
+  port: 1337
+
+kupo:
+  url: http://localhost:1442
+
+charli3:
+  oracle_address: addr_test1...
+  policy_id: ""
+  feed_name: ADA/USD
+
+settlement:
+  max_price_age_seconds: 300
+  require_datum_inline: true
+
+# Wallet used for settlement transactions (not for holding funds)
+wallet:
+  type: cli
+  signing_key_path: ./keys/settlement.skey
