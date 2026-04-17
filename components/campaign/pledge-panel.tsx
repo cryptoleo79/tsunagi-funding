@@ -14,10 +14,10 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
     <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-medium uppercase tracking-wider text-zinc-500">
-          Oracle Rate
+          Live Oracle Rate
         </h3>
         <Chip
-          label={oracle.status === "live" ? "Live" : "Mock"}
+          label={oracle.status === "live" ? "Live" : oracle.status === "fallback" ? "Fallback" : "Mock"}
           variant={oracle.status === "live" ? "success" : "default"}
         />
       </div>
@@ -28,7 +28,7 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
         <span className="text-sm text-zinc-500">ADA/USD</span>
       </div>
       <p className="mt-1 text-xs text-zinc-600">
-        Source: {oracle.price.source}
+        {oracle.price.source}
       </p>
       {oracle.fallbackReason && (
         <p className="mt-1 text-xs text-amber-600">
@@ -37,23 +37,23 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
       )}
 
       <div className="mt-6 space-y-3">
-        <button
-          disabled
-          className="w-full rounded-lg bg-zinc-800 py-3 text-sm font-medium text-zinc-500 cursor-not-allowed"
-        >
-          Pledge ADA (wallet not connected)
-        </button>
         <Link
           href={`/campaigns/${campaignId}/close`}
-          className="block w-full rounded-lg border border-zinc-700 py-3 text-center text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
+          className="block w-full rounded-lg bg-zinc-100 py-3 text-center text-sm font-medium text-zinc-900 transition-colors hover:bg-white"
         >
           Settle Campaign
         </Link>
+        <button
+          disabled
+          className="w-full rounded-lg border border-zinc-800 py-3 text-sm font-medium text-zinc-600 cursor-not-allowed"
+        >
+          Pledge ADA (wallet coming soon)
+        </button>
       </div>
 
       <p className="mt-4 text-xs text-zinc-600 leading-relaxed">
-        Wallet integration is planned. Settlement uses oracle-verified
-        ADA/USD pricing to determine whether the campaign goal was met.
+        Settlement uses the live Charli3 ADA/USD price on Cardano preprod
+        to determine whether pledged ADA meets the campaign goal.
       </p>
     </div>
   );

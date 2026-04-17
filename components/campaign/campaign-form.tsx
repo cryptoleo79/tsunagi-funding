@@ -17,7 +17,7 @@ export function CampaignForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      <Field label="Campaign Title" name="title" placeholder="e.g. Community Dev Fund for Lagos" required />
+      <Field label="Campaign Title" name="title" placeholder="e.g. Afrobeats on Chain: Debut EP" required />
       <Field
         label="Short Description"
         name="description"
@@ -54,9 +54,9 @@ export function CampaignForm() {
         {submitted ? "Creating..." : "Create Campaign"}
       </button>
 
-      <p className="text-xs text-zinc-600">
-        This demo does not persist data. The form redirects to a sample
-        campaign to demonstrate the full flow.
+      <p className="text-xs text-zinc-600 leading-relaxed">
+        Demo mode — the form redirects to a sample campaign to show the
+        full flow from campaign detail through oracle-based settlement.
       </p>
     </form>
   );

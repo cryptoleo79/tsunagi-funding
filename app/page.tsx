@@ -16,23 +16,29 @@ export default function Home() {
             Connecting People Through ADA Funding
           </p>
           <p className="mt-6 max-w-2xl text-zinc-500 leading-relaxed">
-            Oracle-native crowdfunding on Cardano. Creators set a goal in USD,
-            supporters back campaigns in ADA, and at campaign close a live
-            Charli3 oracle rate determines whether the goal was met. If funded,
-            ADA is released to the creator. If not, supporters are refunded.
+            Crowdfunding on Cardano where the outcome is decided by a live
+            on-chain oracle. Creators set a goal in USD, supporters back it
+            in ADA, and at campaign close the Charli3 ADA/USD price determines
+            whether funds are released or supporters are refunded.
           </p>
-          <div className="mt-10 flex gap-4">
+          <div className="mt-10 flex flex-wrap gap-4">
             <Link
-              href="/campaigns/new"
+              href="/campaigns/demo-1"
               className="rounded-lg bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-900 transition-colors hover:bg-white"
             >
-              Create a Campaign
+              View a Campaign
             </Link>
             <Link
               href="/demo/oracle-proof"
               className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
             >
-              Live Oracle Demo
+              Live Oracle Proof
+            </Link>
+            <Link
+              href="/campaigns/demo-1/close"
+              className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
+            >
+              Settlement Demo
             </Link>
           </div>
         </div>
@@ -48,17 +54,17 @@ export default function Home() {
             <Step
               number="1"
               title="Set a goal in USD"
-              description="Creators define their funding target in USD. The amount is fixed regardless of ADA price fluctuations."
+              description="Creators define their funding target in USD. The goal is fixed — it doesn't move with the ADA price."
             />
             <Step
               number="2"
-              title="Back with ADA"
+              title="Supporters back in ADA"
               description="Supporters pledge ADA to campaigns they believe in. Pledges are held until the campaign closes."
             />
             <Step
               number="3"
-              title="Oracle settles the outcome"
-              description="At close, the Charli3 ADA/USD price determines if pledged ADA meets the USD goal. Release or refund."
+              title="Oracle settles at close"
+              description="The live Charli3 ADA/USD oracle determines if the pledged ADA meets the USD goal. Funds are released or supporters are refunded."
             />
           </div>
         </div>
@@ -67,10 +73,18 @@ export default function Home() {
       {/* Campaigns */}
       <section className="border-t border-zinc-800 py-20">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="text-2xl font-semibold text-zinc-100 mb-8">
-            Active Campaigns
-          </h2>
-          <div className="grid gap-6 sm:grid-cols-2">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-semibold text-zinc-100">
+              Active Campaigns
+            </h2>
+            <Link
+              href="/campaigns/new"
+              className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              Create a campaign
+            </Link>
+          </div>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {demoCampaigns.map((c) => (
               <CampaignCard key={c.id} campaign={c} />
             ))}

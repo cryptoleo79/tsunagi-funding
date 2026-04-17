@@ -60,9 +60,10 @@ export function SettlementProof({ result, oracleStatus, fallbackReason }: Settle
         </div>
       )}
 
-      <div className="mt-4 rounded-lg bg-zinc-800/50 p-4">
-        <p className="text-xs text-zinc-500 font-mono break-all">
-          tx: (pending on-chain settlement)
+      <div className="mt-4 rounded-lg bg-zinc-800/50 p-3">
+        <p className="text-xs text-zinc-500">
+          Settlement uses the live Charli3 ADA/USD feed on Cardano preprod
+          via Kupo indexer. On-chain settlement transactions are planned.
         </p>
       </div>
     </div>

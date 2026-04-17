@@ -2,12 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { SiteShell } from "@/components/layout/site-shell";
-import { SettlementProof } from "@/components/campaign/settlement-proof";
-import { SettlementResultBanner } from "@/components/campaign/settlement-result";
-import { getMockPriceAt } from "@/lib/oracle/mock";
-import { buildSettlementInput } from "@/lib/oracle/settlement";
-import { resolveCampaignSettlement } from "@/lib/domain/settlement";
-import { formatAdaUsd } from "@/lib/domain/format";
+import { formatAda, formatUsd, formatAdaUsd } from "@/lib/domain/format";
 import type { OracleStatus } from "@/lib/oracle/types";
 
 interface LiveOracleState {
@@ -20,17 +15,7 @@ interface LiveOracleState {
   error: string | null;
 }
 
-const PRESETS = [
-  { label: "ADA at $0.68 (goal met)", price: 0.68, ada: 25000, goal: 15000 },
-  { label: "ADA at $0.45 (goal missed)", price: 0.45, ada: 25000, goal: 15000 },
-  { label: "ADA at $1.20 (large surplus)", price: 1.2, ada: 25000, goal: 15000 },
-  { label: "ADA at $0.59 (borderline)", price: 0.59, ada: 25000, goal: 15000 },
-];
-
 export default function OracleProofPage() {
-  const [priceInput, setPriceInput] = useState("0.68");
-  const [adaInput, setAdaInput] = useState("25000");
-  const [goalInput, setGoalInput] = useState("15000");
   const [live, setLive] = useState<LiveOracleState>({
     price: 0,
     source: "",
@@ -65,33 +50,30 @@ export default function OracleProofPage() {
     }
   }, []);
 
-  useEffect(() => { fetchLive(); }, [fetchLive]);
-
-  const price = parseFloat(priceInput) || 0;
-  const ada = parseFloat(adaInput) || 0;
-  const goal = parseFloat(goalInput) || 0;
-
-  const oracle = getMockPriceAt(price);
-  const input = buildSettlementInput(goal, ada, oracle);
-  const result = resolveCampaignSettlement(input);
+  useEffect(() => {
+    fetchLive();
+  }, [fetchLive]);
 
   return (
     <SiteShell>
       <div className="mx-auto max-w-3xl px-6 py-16">
-        <h1 className="text-2xl font-semibold text-zinc-100">
-          Oracle Settlement Demo
-        </h1>
-        <p className="mt-2 text-sm text-zinc-400 max-w-xl">
-          The live ADA/USD price is fetched from the Charli3 on-chain feed
-          on Cardano preprod. Adjust the price, pledged ADA, or goal below
-          to see how the settlement outcome changes.
+        {/* 1. Hero proof */}
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-semibold text-zinc-100">
+            Live Oracle Proof
+          </h1>
+          <StatusChip status={live.status} loading={live.loading} />
+        </div>
+        <p className="mt-3 text-sm text-zinc-400 max-w-xl leading-relaxed">
+          The live Charli3 ADA/USD oracle on Cardano preprod determines
+          whether a campaign&rsquo;s funds are released to the creator or
+          refunded to supporters at close.
         </p>
 
-        {/* Live oracle status */}
-        <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900 p-5">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mt-8 rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+          <div className="flex items-center justify-between mb-5">
             <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
-              Oracle Status
+              Current Oracle Price
             </h3>
             <button
               onClick={fetchLive}
@@ -102,144 +84,221 @@ export default function OracleProofPage() {
             </button>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <p className="text-xs text-zinc-500">Mode</p>
-              <p className="mt-0.5 text-sm text-zinc-200">
-                {live.status === "live" && (
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 mr-2" />
-                )}
-                {live.status === "live" ? "Live (Charli3)" : live.status === "fallback" ? "Fallback (mock)" : "Mock (demo)"}
-              </p>
+          {live.loading ? (
+            <p className="text-sm text-zinc-500">Fetching live price...</p>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-semibold text-zinc-100">
+                  {live.price > 0 ? formatAdaUsd(live.price) : "—"}
+                </span>
+                <span className="text-sm text-zinc-500">ADA/USD</span>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Feed</span>
+                  <span className="text-zinc-300">ADA/USD</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-zinc-500">Source</span>
+                  <span className="text-zinc-300">{live.source || "—"}</span>
+                </div>
+                <div className="flex justify-between sm:col-span-2">
+                  <span className="text-zinc-500">Timestamp</span>
+                  <span className="text-zinc-300">
+                    {live.timestamp
+                      ? new Date(live.timestamp).toLocaleString()
+                      : "—"}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-zinc-500">Feed</p>
-              <p className="mt-0.5 text-sm text-zinc-200">ADA/USD</p>
-            </div>
-            <div>
-              <p className="text-xs text-zinc-500">Normalized Price</p>
-              <p className="mt-0.5 text-sm text-zinc-200">
-                {live.loading ? "..." : live.price > 0 ? formatAdaUsd(live.price) : "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-zinc-500">Raw Integer</p>
-              <p className="mt-0.5 text-sm font-mono text-zinc-200">
-                {live.loading ? "..." : live.price > 0 ? Math.round(live.price * 1e6).toString() : "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-zinc-500">Precision</p>
-              <p className="mt-0.5 text-sm font-mono text-zinc-400">
-                {live.status === "live" ? "1e6 (raw / 1,000,000)" : "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-zinc-500">Source</p>
-              <p className="mt-0.5 text-xs text-zinc-400">
-                {live.source || "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-zinc-500">Timestamp</p>
-              <p className="mt-0.5 text-xs text-zinc-400">
-                {live.timestamp ? new Date(live.timestamp).toLocaleString() : "—"}
-              </p>
-            </div>
-          </div>
-
-          {live.fallbackReason && (
-            <p className="mt-3 text-xs text-amber-500 border-t border-zinc-800 pt-3">
-              Fallback reason: {live.fallbackReason}
-            </p>
           )}
+
           {live.error && (
-            <p className="mt-3 text-xs text-red-400 border-t border-zinc-800 pt-3">
-              API error: {live.error}
+            <p className="mt-4 text-xs text-red-400">
+              Error: {live.error}
             </p>
           )}
-
-          {live.status === "live" && live.price > 0 && (
-            <button
-              onClick={() => setPriceInput(live.price.toString())}
-              className="mt-3 text-xs text-emerald-500 hover:text-emerald-400 transition-colors border-t border-zinc-800 pt-3 block w-full text-left"
-            >
-              Use live price ({formatAdaUsd(live.price)}) in settlement calculator below
-            </button>
-          )}
         </div>
 
-        {/* Presets */}
-        <div className="mt-8 flex flex-wrap gap-2">
-          {PRESETS.map((p) => (
-            <button
-              key={p.label}
-              onClick={() => {
-                setPriceInput(p.price.toString());
-                setAdaInput(p.ada.toString());
-                setGoalInput(p.goal.toString());
-              }}
-              className="rounded-lg border border-zinc-800 px-3 py-1.5 text-xs text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200"
-            >
-              {p.label}
-            </button>
-          ))}
+        {/* 2. Settlement meaning */}
+        <div className="mt-10 rounded-xl border border-zinc-800 bg-zinc-900/50 p-6">
+          <p className="text-sm text-zinc-400 leading-relaxed">
+            This live price is used at campaign close to determine whether
+            funds are released to the creator or refunded to supporters.
+            The oracle is the settlement authority &mdash; not a display
+            widget.
+          </p>
         </div>
 
-        {/* Inputs */}
-        <div className="mt-6 grid gap-6 sm:grid-cols-3">
-          <InputField
-            label="ADA/USD Price"
-            value={priceInput}
-            onChange={setPriceInput}
-            sub={`Settlement rate: ${formatAdaUsd(price)}`}
+        {/* 3. Two canned result cards */}
+        <h2 className="mt-12 text-lg font-semibold text-zinc-100">
+          Settlement Outcomes
+        </h2>
+        <p className="mt-1 text-sm text-zinc-500">
+          Two scenarios showing how the same campaign resolves at different
+          ADA/USD rates.
+        </p>
+
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+          <OutcomeCard
+            outcome="funded"
+            oraclePrice={0.68}
+            pledgedAda={25000}
+            goalUsd={15000}
           />
-          <InputField
-            label="Pledged ADA"
-            value={adaInput}
-            onChange={setAdaInput}
-          />
-          <InputField
-            label="Goal (USD)"
-            value={goalInput}
-            onChange={setGoalInput}
+          <OutcomeCard
+            outcome="refund"
+            oraclePrice={0.45}
+            pledgedAda={25000}
+            goalUsd={15000}
           />
         </div>
 
-        {/* Result */}
-        <div className="mt-8 space-y-6">
-          <SettlementResultBanner result={result} />
-          <SettlementProof result={result} />
-        </div>
+        {/* 4. Debug details */}
+        <details className="mt-12 group">
+          <summary className="cursor-pointer text-xs font-medium uppercase tracking-wider text-zinc-600 hover:text-zinc-400 transition-colors">
+            Technical Details
+          </summary>
+          <div className="mt-4 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-5">
+            <div className="grid gap-3 sm:grid-cols-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-zinc-600">Raw Integer</span>
+                <span className="font-mono text-zinc-400">
+                  {live.price > 0
+                    ? Math.round(live.price * 1e6).toString()
+                    : "—"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-600">Precision</span>
+                <span className="font-mono text-zinc-400">
+                  {live.status === "live"
+                    ? "1e6 (raw / 1,000,000)"
+                    : "—"}
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-600">Datum Format</span>
+                <span className="font-mono text-zinc-400">
+                  Plutus CBOR (ODV)
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-zinc-600">Network</span>
+                <span className="font-mono text-zinc-400">
+                  Cardano preprod
+                </span>
+              </div>
+            </div>
+            {live.fallbackReason && (
+              <p className="mt-3 text-xs text-amber-500 border-t border-zinc-800 pt-3">
+                Fallback reason: {live.fallbackReason}
+              </p>
+            )}
+          </div>
+        </details>
       </div>
     </SiteShell>
   );
 }
 
-function InputField({
-  label,
-  value,
-  onChange,
-  sub,
+function StatusChip({
+  status,
+  loading,
 }: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  sub?: string;
+  status: OracleStatus;
+  loading: boolean;
 }) {
+  if (loading) {
+    return (
+      <span className="inline-flex items-center rounded-full border border-zinc-700 px-2.5 py-0.5 text-xs text-zinc-500">
+        Loading
+      </span>
+    );
+  }
+  if (status === "live") {
+    return (
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-800/50 bg-emerald-950/30 px-2.5 py-0.5 text-xs text-emerald-400">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        Live
+      </span>
+    );
+  }
+  if (status === "fallback") {
+    return (
+      <span className="inline-flex items-center rounded-full border border-amber-800/50 bg-amber-950/30 px-2.5 py-0.5 text-xs text-amber-400">
+        Fallback
+      </span>
+    );
+  }
   return (
-    <div>
-      <label className="block text-sm font-medium text-zinc-300 mb-2">
-        {label}
-      </label>
-      <input
-        type="number"
-        step="any"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-zinc-100 focus:border-zinc-600 focus:outline-none"
-      />
-      {sub && <p className="mt-1 text-xs text-zinc-600">{sub}</p>}
+    <span className="inline-flex items-center rounded-full border border-zinc-700 px-2.5 py-0.5 text-xs text-zinc-500">
+      Mock
+    </span>
+  );
+}
+
+function OutcomeCard({
+  outcome,
+  oraclePrice,
+  pledgedAda,
+  goalUsd,
+}: {
+  outcome: "funded" | "refund";
+  oraclePrice: number;
+  pledgedAda: number;
+  goalUsd: number;
+}) {
+  const usdRaised = pledgedAda * oraclePrice;
+  const funded = outcome === "funded";
+
+  return (
+    <div
+      className={`rounded-xl border p-5 ${
+        funded
+          ? "border-emerald-800/40 bg-emerald-950/20"
+          : "border-amber-800/40 bg-amber-950/20"
+      }`}
+    >
+      <h3
+        className={`text-sm font-semibold ${
+          funded ? "text-emerald-300" : "text-amber-300"
+        }`}
+      >
+        {funded ? "Funds Released" : "Supporters Refunded"}
+      </h3>
+      <p className="mt-1 text-xs text-zinc-500">
+        {funded
+          ? "Goal met — ADA released to creator"
+          : "Goal missed — ADA returned to supporters"}
+      </p>
+      <div className="mt-4 space-y-2 text-sm">
+        <Row label="Oracle Price" value={formatAdaUsd(oraclePrice)} />
+        <Row label="Pledged" value={formatAda(pledgedAda)} />
+        <Row label="USD Equivalent" value={formatUsd(usdRaised)} />
+        <Row label="Goal" value={formatUsd(goalUsd)} />
+        <div className="border-t border-zinc-800 pt-2 flex justify-between">
+          <span className="text-zinc-500">Outcome</span>
+          <span
+            className={`font-medium ${
+              funded ? "text-emerald-400" : "text-amber-400"
+            }`}
+          >
+            {funded ? "Release" : "Refund"}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Row({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex justify-between">
+      <span className="text-zinc-500">{label}</span>
+      <span className="text-zinc-200">{value}</span>
     </div>
   );
 }

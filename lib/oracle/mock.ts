@@ -1,8 +1,8 @@
 import type { OraclePrice } from "./types";
 
-// Realistic ADA/USD range for demo purposes.
-// These values approximate recent market conditions.
-const MOCK_ADA_USD = 0.6834;
+// Preprod-aligned ADA/USD for demo display.
+// Matches the approximate range of the live Charli3 preprod feed.
+const MOCK_ADA_USD = 0.26;
 
 export function getMockPrice(): OraclePrice {
   return {

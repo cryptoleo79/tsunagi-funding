@@ -15,38 +15,44 @@ short today — or vice versa. Without a trusted on-chain price, neither
 creators nor supporters can agree on the outcome. The oracle provides a
 verifiable settlement rate that both sides can trust.
 
-## 3. Live oracle proof (60 seconds)
+## 3. Campaign flow (60 seconds)
 
-Open `/demo/oracle-proof`. Point out the oracle status panel:
+Open the homepage. Show the three demo campaigns — each with a different
+funding story. Click into "Afrobeats on Chain" (`/campaigns/demo-1`).
 
-- Mode shows "Live (Charli3)" with a green indicator
-- The price is read from the real Charli3 ADA/USD feed on Cardano preprod
-- Raw integer and precision show the unprocessed on-chain value
-- Source includes the preprod slot number
+Point out:
+- The campaign goal in USD
+- The amount pledged in ADA
+- The live oracle rate in the pledge panel (with a "Live" chip)
+
+Click "Settle Campaign" to go to the close page.
+
+## 4. Settlement (60 seconds)
+
+The settlement page shows the outcome in one glance:
+
+- "Campaign Funded" — the pledged ADA exceeded the USD goal at the current
+  oracle rate. Funds are released to the creator.
+
+Now go back and try the Accra Summit campaign (`/campaigns/demo-2/close`):
+
+- "Supporters Refunded" — the pledged ADA fell short. Supporters get their
+  ADA back.
+
+The oracle determines both outcomes from the same live price feed.
+
+## 5. Live oracle proof (30 seconds)
+
+Open `/demo/oracle-proof`. The status panel shows the live Charli3 price
+with source, timestamp, and a "Live" indicator. Below, two canned cards
+show how the same pledge amount produces release or refund at different
+ADA/USD rates.
 
 Optionally run `curl http://localhost:3000/api/oracle` to show the raw
 JSON response.
 
-## 4. Settlement outcomes (60 seconds)
-
-Use the preset buttons to show two scenarios:
-
-- **"ADA at $0.68 (goal met)"** — the banner turns green: Campaign Funded.
-  Funds are released to the creator.
-- **"ADA at $0.45 (goal missed)"** — the banner turns amber: Supporters
-  Refunded. Pledges are returned.
-
-The settlement proof panel below shows the full breakdown: oracle source,
-price, pledged ADA, USD equivalent, goal, and outcome.
-
-## 5. Campaign flow (30 seconds)
-
-Navigate to `/campaigns/demo-1` to show a campaign detail page with the
-live oracle rate in the pledge panel. Click "Settle Campaign" to see the
-settlement page using real oracle data.
-
 ## 6. Wrap-up (30 seconds)
 
-The oracle is not a display widget — it is the mechanism that decides
-every settlement. The full path from Kupo query to Plutus CBOR decode
-to price extraction is live and verified on preprod.
+The oracle is not decorative — it is the mechanism that decides every
+settlement. The full path from Kupo query to Plutus CBOR datum decode
+to price extraction is live on Cardano preprod.

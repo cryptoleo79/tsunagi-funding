@@ -45,7 +45,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
         <div className="mt-2 h-1.5 rounded-full bg-zinc-800">
           <div
             className="h-full rounded-full bg-emerald-500 transition-all"
-            style={{ width: `${(progress * 100).toFixed(1)}%` }}
+            style={{ width: `${Math.min(progress * 100, 100).toFixed(1)}%` }}
           />
         </div>
       </div>
