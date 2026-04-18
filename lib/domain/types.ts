@@ -39,3 +39,35 @@ export interface SettlementResult {
   settledAt: Date;
   oracleSource: string;
 }
+
+export interface CampaignUpdate {
+  date: Date;
+  title: string;
+  body: string;
+}
+
+export interface SupporterMessage {
+  name: string;
+  amountAda: number;
+  message: string;
+  date: Date;
+}
+
+export interface FundAllocation {
+  category: string;
+  percentage: number;
+}
+
+export interface FaqEntry {
+  question: string;
+  answer: string;
+}
+
+export interface CampaignContent {
+  story: string;
+  creatorBio: string;
+  updates: CampaignUpdate[];
+  supporters: SupporterMessage[];
+  useOfFunds: FundAllocation[];
+  faq: FaqEntry[];
+}
