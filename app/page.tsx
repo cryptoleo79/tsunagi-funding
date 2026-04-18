@@ -17,12 +17,12 @@ export default function Home() {
   return (
     <SiteShell>
       {/* Hero */}
-      <section className="py-24 sm:py-32">
+      <section className="py-28 sm:py-36">
         <div className="mx-auto max-w-5xl px-6">
-          <h1 className="text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl">
+          <h1 className="text-4xl font-semibold tracking-tight text-white sm:text-5xl">
             TSUNAGI Funding
           </h1>
-          <p className="mt-1 text-lg text-zinc-500">
+          <p className="mt-1 text-lg text-zinc-400">
             Connecting People Through ADA Funding
           </p>
           <p className="mt-8 max-w-2xl text-sm text-zinc-400 leading-relaxed sm:text-base">
@@ -40,13 +40,13 @@ export default function Home() {
             </Link>
             <Link
               href="/demo/oracle-proof"
-              className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200"
+              className="rounded-lg border border-zinc-600 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
             >
               Live Oracle Proof
             </Link>
             <Link
               href="/campaigns/demo-1/close"
-              className="rounded-lg border border-zinc-700 px-5 py-2.5 text-sm font-medium text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200"
+              className="rounded-lg border border-zinc-600 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
             >
               Settlement Demo
             </Link>
@@ -55,25 +55,25 @@ export default function Home() {
       </section>
 
       {/* Featured Campaign */}
-      <section className="border-t border-zinc-800/60 py-20">
+      <section className="border-t border-zinc-800 py-24">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
             Featured Campaign
           </h2>
           <Link
             href={`/campaigns/${featured.id}`}
-            className="group mt-6 block rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 sm:p-8 transition-all hover:border-zinc-700"
+            className="group mt-6 block rounded-xl border border-zinc-700/50 bg-zinc-900 p-6 sm:p-8 transition-all hover:border-zinc-600/50"
           >
             <div className="sm:flex sm:items-start sm:justify-between sm:gap-8">
               <div className="min-w-0 flex-1">
-                <h3 className="text-xl font-semibold text-zinc-100 group-hover:text-white sm:text-2xl">
+                <h3 className="text-xl font-semibold text-white group-hover:text-white sm:text-2xl">
                   {featured.title}
                 </h3>
-                <p className="mt-1 text-sm text-zinc-500">by {featured.creatorName}</p>
+                <p className="mt-1 text-sm text-zinc-400">by {featured.creatorName}</p>
                 <p className="mt-4 text-sm text-zinc-400 leading-relaxed max-w-xl">
                   {featured.description}
                 </p>
-                <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-zinc-500">
+                <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-zinc-400">
                   <span>{formatUsd(calculateUsdRaised(featured.pledgedAda, oracle.price))} raised</span>
                   <span>{formatAda(featured.pledgedAda)} pledged</span>
                   <span>{featured.supporterCount} supporters</span>
@@ -81,7 +81,7 @@ export default function Home() {
                 </div>
               </div>
               <div className="mt-6 sm:mt-0 sm:text-right shrink-0">
-                <p className="text-2xl font-semibold text-zinc-100 tabular-nums">
+                <p className="text-2xl font-semibold text-white tabular-nums">
                   {formatUsd(featured.goalUsd)}
                 </p>
                 <p className="text-xs text-zinc-500">goal</p>
@@ -92,12 +92,12 @@ export default function Home() {
       </section>
 
       {/* How it works */}
-      <section className="border-t border-zinc-800/60 py-20">
+      <section className="border-t border-zinc-800 py-24">
         <div className="mx-auto max-w-5xl px-6">
-          <h2 className="text-xl font-semibold text-zinc-100">
+          <h2 className="text-xl font-semibold text-white">
             How it works
           </h2>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-2 text-sm text-zinc-400">
             Three steps from campaign creation to oracle-based settlement.
           </p>
           <div className="mt-10 grid gap-10 sm:grid-cols-3">
@@ -122,14 +122,14 @@ export default function Home() {
 
       {/* Closing Soon */}
       {closingSoon.length > 0 && (
-        <section className="border-t border-zinc-800/60 py-20">
+        <section className="border-t border-zinc-800 py-24">
           <div className="mx-auto max-w-5xl px-6">
             <div className="flex items-baseline justify-between mb-10">
               <div>
-                <h2 className="text-xl font-semibold text-zinc-100">
+                <h2 className="text-xl font-semibold text-white">
                   Closing Soon
                 </h2>
-                <p className="mt-1 text-sm text-zinc-500">
+                <p className="mt-1 text-sm text-zinc-400">
                   Back these campaigns before settlement.
                 </p>
               </div>
@@ -144,15 +144,15 @@ export default function Home() {
       )}
 
       {/* All Campaigns */}
-      <section className="border-t border-zinc-800/60 py-20">
+      <section className="border-t border-zinc-800 py-24">
         <div className="mx-auto max-w-5xl px-6">
           <div className="flex items-baseline justify-between mb-10">
-            <h2 className="text-xl font-semibold text-zinc-100">
+            <h2 className="text-xl font-semibold text-white">
               All Campaigns
             </h2>
             <Link
               href="/campaigns/new"
-              className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
             >
               Create a campaign &rarr;
             </Link>
@@ -179,11 +179,11 @@ function Step({
 }) {
   return (
     <div>
-      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-700 text-sm font-medium text-zinc-400">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-600 text-sm font-medium text-zinc-300">
         {number}
       </div>
-      <h3 className="mt-4 text-sm font-medium text-zinc-200">{title}</h3>
-      <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+      <h3 className="mt-4 text-sm font-medium text-zinc-100">{title}</h3>
+      <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
         {description}
       </p>
     </div>

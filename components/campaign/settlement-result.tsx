@@ -15,10 +15,10 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
     : 0;
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 sm:p-8">
+    <div className="rounded-xl border border-zinc-700/50 bg-zinc-900 p-6 sm:p-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+        <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
           Settlement Decision
         </h2>
         {oracleStatus && (
@@ -36,17 +36,17 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
         <MathRow step="3" label="Live ADA/USD" value={formatAdaUsd(result.adaUsdPrice)} />
       </div>
 
-      <div className="my-7 border-t border-zinc-800/60" />
+      <div className="my-7 border-t border-zinc-800" />
 
       {/* Calculation */}
       <div>
         <div className="flex items-baseline justify-between">
-          <span className="text-sm text-zinc-400">USD Value at Close</span>
-          <span className="text-2xl font-semibold text-zinc-100 tabular-nums">
+          <span className="text-sm text-zinc-300">USD Value at Close</span>
+          <span className="text-2xl font-semibold text-white tabular-nums">
             {formatUsd(result.usdRaised)}
           </span>
         </div>
-        <p className="mt-1 text-xs text-zinc-600">
+        <p className="mt-1 text-xs text-zinc-500">
           = {result.pledgedAda.toLocaleString("en-US")} ADA &times; {formatAdaUsd(result.adaUsdPrice)}
         </p>
       </div>
@@ -56,35 +56,35 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
         <div className="h-2.5 rounded-full bg-zinc-800 overflow-hidden">
           <div
             className={`h-full rounded-full ${
-              funded ? "bg-emerald-500/80" : "bg-amber-500/80"
+              funded ? "bg-emerald-500" : "bg-amber-500"
             }`}
             style={{ width: `${fillPercent.toFixed(1)}%` }}
           />
         </div>
         <div className="mt-1.5 flex justify-between text-xs">
-          <span className={funded ? "text-emerald-500/80" : "text-amber-500/80"}>
+          <span className={funded ? "text-emerald-400" : "text-amber-400"}>
             {formatUsd(result.usdRaised)} raised
           </span>
-          <span className="text-zinc-600">
+          <span className="text-zinc-500">
             {formatUsd(result.goalUsd)} goal
           </span>
         </div>
       </div>
 
-      <div className="my-7 border-t border-zinc-800/60" />
+      <div className="my-7 border-t border-zinc-800" />
 
       {/* Verdict */}
       <div
         className={`rounded-xl p-5 ${
           funded
-            ? "bg-emerald-950/30 border border-emerald-800/30"
-            : "bg-amber-950/30 border border-amber-800/30"
+            ? "bg-emerald-950/40 border border-emerald-800/40"
+            : "bg-amber-950/40 border border-amber-800/40"
         }`}
       >
         <div className="flex items-center gap-3">
           <div
             className={`flex h-10 w-10 items-center justify-center rounded-full text-lg shrink-0 ${
-              funded ? "bg-emerald-900/50 text-emerald-300" : "bg-amber-900/50 text-amber-300"
+              funded ? "bg-emerald-900/60 text-emerald-300" : "bg-amber-900/60 text-amber-300"
             }`}
           >
             {funded ? "\u2713" : "\u21A9"}
@@ -97,7 +97,7 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
             >
               {funded ? "Funds Released" : "Supporters Refunded"}
             </h3>
-            <p className="mt-0.5 text-sm text-zinc-400">
+            <p className="mt-0.5 text-sm text-zinc-300">
               {formatUsd(result.usdRaised)}{" "}
               {funded ? "\u2265" : "<"}{" "}
               {formatUsd(result.goalUsd)}
@@ -124,12 +124,12 @@ function MathRow({
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-3">
-        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 text-xs text-zinc-500">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full border border-zinc-600 text-xs text-zinc-400">
           {step}
         </span>
-        <span className="text-sm text-zinc-400">{label}</span>
+        <span className="text-sm text-zinc-300">{label}</span>
       </div>
-      <span className="text-sm font-medium text-zinc-200 tabular-nums">{value}</span>
+      <span className="text-sm font-medium text-zinc-100 tabular-nums">{value}</span>
     </div>
   );
 }

@@ -11,9 +11,9 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
   const oracle = await fetchAdaUsdPrice();
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6">
+    <div className="rounded-xl border border-zinc-700/50 bg-zinc-900 p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
           Live Oracle Rate
         </h3>
         <Chip
@@ -22,16 +22,16 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
         />
       </div>
       <div className="flex items-baseline gap-2">
-        <span className="text-2xl font-semibold text-zinc-100">
+        <span className="text-2xl font-semibold text-white">
           {formatAdaUsd(oracle.price.price)}
         </span>
-        <span className="text-sm text-zinc-500">ADA/USD</span>
+        <span className="text-sm text-zinc-400">ADA/USD</span>
       </div>
-      <p className="mt-1 text-xs text-zinc-600">
+      <p className="mt-1 text-xs text-zinc-500">
         {oracle.price.source}
       </p>
       {oracle.fallbackReason && (
-        <p className="mt-1 text-xs text-amber-500/80">
+        <p className="mt-1 text-xs text-amber-400">
           Fallback: {oracle.fallbackReason}
         </p>
       )}
@@ -45,13 +45,13 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
         </Link>
         <button
           disabled
-          className="w-full rounded-lg border border-zinc-800 py-3 text-sm font-medium text-zinc-600 cursor-not-allowed"
+          className="w-full rounded-lg border border-zinc-700 py-3 text-sm font-medium text-zinc-500 cursor-not-allowed"
         >
           Pledge ADA (demo mode)
         </button>
       </div>
 
-      <p className="mt-5 text-xs text-zinc-600 leading-relaxed">
+      <p className="mt-5 text-xs text-zinc-500 leading-relaxed">
         At close, the live Charli3 ADA/USD price determines whether
         pledged ADA meets the campaign goal in USD.
       </p>

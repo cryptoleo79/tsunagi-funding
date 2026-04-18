@@ -38,10 +38,10 @@ export default async function CloseCampaignPage({ params }: Props) {
           &larr; Back to campaign
         </Link>
 
-        <h1 className="mt-6 text-2xl font-semibold text-zinc-100">
+        <h1 className="mt-6 text-2xl font-semibold text-white">
           {campaign.title}
         </h1>
-        <p className="mt-2 text-sm text-zinc-500">
+        <p className="mt-2 text-sm text-zinc-400">
           Settlement determined by the live Charli3 ADA/USD oracle on
           Cardano preprod.
         </p>

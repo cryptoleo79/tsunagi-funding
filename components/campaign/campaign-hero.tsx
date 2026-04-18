@@ -23,12 +23,12 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
           label={campaign.status === "active" ? "Active" : "Closed"}
           variant={campaign.status === "active" ? "success" : "default"}
         />
-        <span className="text-sm text-zinc-500">
+        <span className="text-sm text-zinc-400">
           by {campaign.creatorName}
         </span>
       </div>
 
-      <h1 className="text-2xl font-semibold text-zinc-100 sm:text-3xl">
+      <h1 className="text-2xl font-semibold text-white sm:text-3xl">
         {campaign.title}
       </h1>
 
@@ -38,14 +38,14 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
 
       <div className="mt-8">
         <div className="flex justify-between text-sm mb-2">
-          <span className="text-zinc-300">
+          <span className="text-zinc-200">
             {formatUsd(usdRaised)} of {formatUsd(campaign.goalUsd)}
           </span>
-          <span className="text-zinc-500">{formatPercent(progress)}</span>
+          <span className="text-zinc-400">{formatPercent(progress)}</span>
         </div>
         <div className="h-2 rounded-full bg-zinc-800">
           <div
-            className="h-full rounded-full bg-emerald-500/80 transition-all"
+            className="h-full rounded-full bg-emerald-500 transition-all"
             style={{ width: `${Math.min(progress * 100, 100).toFixed(1)}%` }}
           />
         </div>
@@ -62,7 +62,7 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
         />
       </div>
 
-      <p className="mt-8 text-xs text-zinc-600 leading-relaxed">
+      <p className="mt-8 text-xs text-zinc-500 leading-relaxed">
         Campaign display values are estimated for readability. Final
         settlement is determined at close using the live Charli3 oracle.
       </p>

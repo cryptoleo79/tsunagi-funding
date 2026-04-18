@@ -9,14 +9,14 @@ export function CampaignFaq({ entries }: CampaignFaqProps) {
 
   return (
     <section>
-      <h2 className="text-base font-semibold text-zinc-100">FAQ</h2>
+      <h2 className="text-base font-semibold text-white">FAQ</h2>
       <div className="mt-4 space-y-5">
         {entries.map((entry, i) => (
           <div key={i}>
-            <h3 className="text-sm font-medium text-zinc-200">
+            <h3 className="text-sm font-medium text-zinc-100">
               {entry.question}
             </h3>
-            <p className="mt-1.5 text-sm text-zinc-500 leading-relaxed">
+            <p className="mt-1.5 text-sm text-zinc-400 leading-relaxed">
               {entry.answer}
             </p>
           </div>

@@ -12,9 +12,9 @@ interface SettlementProofProps {
 
 export function SettlementProof({ result, oracleStatus, fallbackReason }: SettlementProofProps) {
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6">
+    <div className="rounded-xl border border-zinc-700/50 bg-zinc-900 p-6">
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+        <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
           Oracle Proof
         </h3>
         {oracleStatus && (
@@ -36,14 +36,14 @@ export function SettlementProof({ result, oracleStatus, fallbackReason }: Settle
       </div>
 
       {fallbackReason && (
-        <div className="mt-5 rounded-lg bg-amber-950/20 border border-amber-900/30 p-3">
-          <p className="text-xs text-amber-500/80">
+        <div className="mt-5 rounded-lg bg-amber-950/30 border border-amber-900/30 p-3">
+          <p className="text-xs text-amber-400">
             Using mock price: {fallbackReason}
           </p>
         </div>
       )}
 
-      <p className="mt-5 text-xs text-zinc-600 leading-relaxed">
+      <p className="mt-5 text-xs text-zinc-500 leading-relaxed">
         Price sourced from the Charli3 ADA/USD feed on Cardano preprod
         via Kupo indexer. On-chain settlement transactions are planned.
       </p>
@@ -54,7 +54,7 @@ export function SettlementProof({ result, oracleStatus, fallbackReason }: Settle
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex justify-between">
-      <span className="text-zinc-500">{label}</span>
+      <span className="text-zinc-400">{label}</span>
       <span className="text-zinc-200">{value}</span>
     </div>
   );
