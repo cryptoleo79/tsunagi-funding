@@ -12,6 +12,7 @@ export function WalletButton() {
         <span className="text-xs text-zinc-400">
           addr_test1qp...demo
         </span>
+        <span className="text-xs text-zinc-600">(demo)</span>
       </div>
     );
   }
@@ -21,7 +22,7 @@ export function WalletButton() {
       onClick={() => setConnected(true)}
       className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs font-medium text-zinc-300 transition-colors hover:bg-zinc-800"
     >
-      Connect Wallet
+      Connect Wallet (Demo)
     </button>
   );
 }

@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { CampaignHero } from "@/components/campaign/campaign-hero";
 import { PledgePanel } from "@/components/campaign/pledge-panel";
@@ -28,7 +29,14 @@ export default async function CampaignPage({ params }: Props) {
   return (
     <SiteShell>
       <div className="mx-auto max-w-5xl px-6 py-16">
-        <div className="grid gap-10 lg:grid-cols-3">
+        <Link
+          href="/"
+          className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+        >
+          &larr; Back to campaigns
+        </Link>
+
+        <div className="mt-6 grid gap-10 lg:grid-cols-3">
           {/* Main column */}
           <div className="lg:col-span-2 space-y-12">
             <CampaignHero campaign={campaign} />

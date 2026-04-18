@@ -29,24 +29,37 @@ export default function OracleProofPage() {
 
   const fetchLive = useCallback(async () => {
     setLive((s) => ({ ...s, loading: true, error: null }));
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
     try {
-      const res = await fetch("/api/oracle");
+      const res = await fetch("/api/oracle", {
+        signal: controller.signal,
+        cache: "no-store",
+      });
+      clearTimeout(timeout);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       setLive({
-        price: data.price,
-        source: data.source,
-        timestamp: data.timestamp,
-        status: data.status,
-        fallbackReason: data.fallbackReason,
+        price: data.price ?? 0,
+        source: data.source ?? "",
+        timestamp: data.timestamp ?? "",
+        status: data.status ?? "mock",
+        fallbackReason: data.fallbackReason ?? null,
         loading: false,
         error: null,
       });
     } catch (err) {
+      clearTimeout(timeout);
+      const msg =
+        err instanceof DOMException && err.name === "AbortError"
+          ? "Request timed out — the oracle may be slow to respond"
+          : err instanceof Error
+            ? err.message
+            : "Failed to fetch oracle price";
       setLive((s) => ({
         ...s,
         loading: false,
-        error: err instanceof Error ? err.message : "fetch failed",
+        error: msg,
       }));
     }
   }, []);
@@ -88,6 +101,16 @@ export default function OracleProofPage() {
 
           {live.loading ? (
             <p className="text-sm text-zinc-400">Fetching live price...</p>
+          ) : live.error ? (
+            <div className="space-y-3">
+              <p className="text-sm text-red-400">{live.error}</p>
+              <button
+                onClick={fetchLive}
+                className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
+              >
+                Try again
+              </button>
+            </div>
           ) : (
             <div className="space-y-5">
               <div className="flex items-baseline gap-3">
@@ -116,12 +139,6 @@ export default function OracleProofPage() {
                 />
               </div>
             </div>
-          )}
-
-          {live.error && (
-            <p className="mt-4 text-xs text-red-400">
-              Error: {live.error}
-            </p>
           )}
 
           <p className="mt-6 text-xs text-zinc-500 leading-relaxed border-t border-zinc-800 pt-5">
