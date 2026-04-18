@@ -12,7 +12,7 @@ interface LiveOracleState {
   timestamp: string;
   status: OracleStatus;
   fallbackReason: string | null;
-  loading: boolean;
+  loaded: boolean;
   error: string | null;
 }
 
@@ -23,12 +23,13 @@ export default function OracleProofPage() {
     timestamp: "",
     status: "mock",
     fallbackReason: null,
-    loading: true,
+    loaded: false,
     error: null,
   });
+  const [refreshing, setRefreshing] = useState(false);
 
-  const fetchLive = useCallback(async () => {
-    setLive((s) => ({ ...s, loading: true, error: null }));
+  const fetchLive = useCallback(async (isRefresh = false) => {
+    if (isRefresh) setRefreshing(true);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
     try {
@@ -45,28 +46,30 @@ export default function OracleProofPage() {
         timestamp: data.timestamp ?? "",
         status: data.status ?? "mock",
         fallbackReason: data.fallbackReason ?? null,
-        loading: false,
+        loaded: true,
         error: null,
       });
     } catch (err) {
       clearTimeout(timeout);
       const msg =
         err instanceof DOMException && err.name === "AbortError"
-          ? "Request timed out — the oracle may be slow to respond"
+          ? "Request timed out"
           : err instanceof Error
             ? err.message
-            : "Failed to fetch oracle price";
-      setLive((s) => ({
-        ...s,
-        loading: false,
-        error: msg,
-      }));
+            : "Fetch failed";
+      setLive((s) => ({ ...s, loaded: true, error: msg }));
+    } finally {
+      setRefreshing(false);
     }
   }, []);
 
   useEffect(() => {
     fetchLive();
   }, [fetchLive]);
+
+  const hasData = live.loaded && !live.error && live.price > 0;
+  const hasError = live.loaded && live.error;
+  const isLoading = !live.loaded;
 
   return (
     <SiteShell>
@@ -76,7 +79,18 @@ export default function OracleProofPage() {
           <h1 className="text-2xl font-semibold text-white">
             Live Oracle Proof
           </h1>
-          <StatusChip status={live.status} loading={live.loading} />
+          {isLoading && (
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-600 px-2.5 py-0.5 text-xs text-zinc-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-zinc-400 animate-pulse" />
+              Connecting
+            </span>
+          )}
+          {hasData && <LiveChip status={live.status} />}
+          {hasError && (
+            <span className="inline-flex items-center rounded-full border border-red-800/50 bg-red-950/30 px-2.5 py-0.5 text-xs text-red-400">
+              Offline
+            </span>
+          )}
         </div>
         <p className="mt-3 text-sm text-zinc-400 max-w-xl leading-relaxed">
           The live Charli3 ADA/USD oracle on Cardano preprod determines
@@ -85,67 +99,84 @@ export default function OracleProofPage() {
         </p>
 
         {/* Oracle price card */}
-        <div className="mt-10 rounded-xl border border-zinc-700/50 bg-zinc-900 p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
-              Current Oracle Price
-            </h3>
-            <button
-              onClick={fetchLive}
-              disabled={live.loading}
-              className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors disabled:opacity-50"
-            >
-              {live.loading ? "Fetching..." : "Refresh"}
-            </button>
-          </div>
-
-          {live.loading ? (
-            <p className="text-sm text-zinc-400">Fetching live price...</p>
-          ) : live.error ? (
-            <div className="space-y-3">
-              <p className="text-sm text-red-400">{live.error}</p>
-              <button
-                onClick={fetchLive}
-                className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
-              >
-                Try again
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-5">
-              <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-semibold text-white tabular-nums">
-                  {live.price > 0 ? formatAdaUsd(live.price) : "—"}
-                </span>
-                <span className="text-sm text-zinc-400">ADA/USD</span>
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2 text-sm">
-                <Row label="Mode" value={live.status === "live" ? "Live" : live.status === "fallback" ? "Fallback" : "Mock"} />
-                <Row label="Feed" value="ADA/USD" />
-                <Row label="Source" value={live.source || "—"} />
-                <Row
-                  label="Raw Integer"
-                  value={live.price > 0 ? Math.round(live.price * 1e6).toString() : "—"}
-                  mono
-                />
-                <Row
-                  label="Precision"
-                  value={live.status === "live" ? "1e6" : "—"}
-                  mono
-                />
-                <Row
-                  label="Timestamp"
-                  value={live.timestamp ? new Date(live.timestamp).toLocaleString() : "—"}
-                />
-              </div>
+        <div className="mt-10 rounded-xl border border-zinc-700 bg-zinc-900 p-6 sm:p-8">
+          {isLoading && (
+            <div className="flex items-center gap-3">
+              <span className="h-3 w-3 rounded-full bg-zinc-600 animate-pulse" />
+              <p className="text-sm text-zinc-300">
+                Connecting to Charli3 oracle on Cardano preprod...
+              </p>
             </div>
           )}
 
-          <p className="mt-6 text-xs text-zinc-500 leading-relaxed border-t border-zinc-800 pt-5">
-            This price is the settlement authority — not a display widget.
-            At campaign close it determines whether funds are released or
-            supporters are refunded.
-          </p>
+          {hasError && (
+            <div>
+              <p className="text-sm text-zinc-200">
+                Unable to fetch live price
+              </p>
+              <p className="mt-1 text-xs text-zinc-500">{live.error}</p>
+              <button
+                onClick={() => fetchLive()}
+                className="mt-4 rounded-lg border border-zinc-600 px-4 py-2 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-white"
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {hasData && (
+            <>
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
+                  Current Oracle Price
+                </h3>
+                <button
+                  onClick={() => fetchLive(true)}
+                  disabled={refreshing}
+                  className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors disabled:opacity-50"
+                >
+                  {refreshing ? "Refreshing..." : "Refresh"}
+                </button>
+              </div>
+
+              <div className="flex items-baseline gap-3">
+                <span className="text-4xl font-semibold text-white tabular-nums tracking-tight">
+                  {formatAdaUsd(live.price)}
+                </span>
+                <span className="text-sm font-medium text-zinc-300">ADA/USD</span>
+              </div>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-2 text-sm">
+                <Row label="Mode" value={live.status === "live" ? "Live" : live.status === "fallback" ? "Fallback" : "Mock"} />
+                <Row label="Feed" value="ADA/USD" />
+                <Row label="Source" value={live.source} />
+                <Row
+                  label="Raw Integer"
+                  value={Math.round(live.price * 1e6).toString()}
+                  mono
+                />
+                <Row label="Precision" value="1e6" mono />
+                <Row
+                  label="Timestamp"
+                  value={new Date(live.timestamp).toLocaleString()}
+                />
+              </div>
+
+              {live.fallbackReason && (
+                <div className="mt-6 rounded-lg bg-amber-950/30 border border-amber-900/30 p-3">
+                  <p className="text-xs text-amber-400">
+                    Fallback: {live.fallbackReason}
+                  </p>
+                </div>
+              )}
+
+              <p className="mt-6 text-xs text-zinc-500 leading-relaxed border-t border-zinc-800 pt-5">
+                This price is the settlement authority — not a display widget.
+                At campaign close it determines whether funds are released or
+                supporters are refunded.
+              </p>
+            </>
+          )}
         </div>
 
         {/* Outcome examples */}
@@ -179,13 +210,13 @@ export default function OracleProofPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/campaigns/demo-1/close"
-              className="rounded-lg border border-zinc-700/50 px-4 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+              className="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-200 transition-colors hover:border-zinc-500 hover:text-white"
             >
               Funded Settlement
             </Link>
             <Link
               href="/campaigns/demo-2/close"
-              className="rounded-lg border border-zinc-700/50 px-4 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+              className="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-200 transition-colors hover:border-zinc-500 hover:text-white"
             >
               Refund Settlement
             </Link>
@@ -197,18 +228,13 @@ export default function OracleProofPage() {
           <summary className="cursor-pointer text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors">
             Technical Details
           </summary>
-          <div className="mt-4 rounded-xl border border-zinc-700/50 bg-zinc-900/60 p-5">
-            <div className="grid gap-3 sm:grid-cols-2 text-sm">
+          <div className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-5">
+            <div className="grid gap-4 sm:grid-cols-2 text-sm">
               <Row label="Datum Format" value="Plutus CBOR (ODV)" mono />
               <Row label="Network" value="Cardano preprod" mono />
               <Row label="Indexer" value="Kupo REST API" mono />
               <Row label="Oracle Provider" value="Charli3" mono />
             </div>
-            {live.fallbackReason && (
-              <p className="mt-4 text-xs text-amber-400 border-t border-zinc-800 pt-3">
-                Fallback reason: {live.fallbackReason}
-              </p>
-            )}
           </div>
         </details>
       </div>
@@ -216,23 +242,10 @@ export default function OracleProofPage() {
   );
 }
 
-function StatusChip({
-  status,
-  loading,
-}: {
-  status: OracleStatus;
-  loading: boolean;
-}) {
-  if (loading) {
-    return (
-      <span className="inline-flex items-center rounded-full border border-zinc-600 px-2.5 py-0.5 text-xs text-zinc-400">
-        Loading
-      </span>
-    );
-  }
+function LiveChip({ status }: { status: OracleStatus }) {
   if (status === "live") {
     return (
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700/50 bg-emerald-950/40 px-2.5 py-0.5 text-xs text-emerald-400">
+      <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-700/50 bg-emerald-950/40 px-2.5 py-0.5 text-xs font-medium text-emerald-400">
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
         Live
       </span>
@@ -240,7 +253,7 @@ function StatusChip({
   }
   if (status === "fallback") {
     return (
-      <span className="inline-flex items-center rounded-full border border-amber-700/50 bg-amber-950/40 px-2.5 py-0.5 text-xs text-amber-400">
+      <span className="inline-flex items-center rounded-full border border-amber-700/50 bg-amber-950/40 px-2.5 py-0.5 text-xs font-medium text-amber-400">
         Fallback
       </span>
     );
@@ -308,9 +321,9 @@ function OutcomeCard({
 
 function Row({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between py-0.5">
       <span className="text-zinc-400">{label}</span>
-      <span className={`text-zinc-200 ${mono ? "font-mono" : ""}`}>{value}</span>
+      <span className={`text-zinc-100 ${mono ? "font-mono" : ""}`}>{value}</span>
     </div>
   );
 }
