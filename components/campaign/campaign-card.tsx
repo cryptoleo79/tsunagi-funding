@@ -59,9 +59,9 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
             {remaining > 0 ? `${remaining} days left` : "Campaign ended"}
           </span>
         </div>
-        <div className="mt-2 text-xs text-zinc-500">
+        <p className="mt-2 text-xs text-zinc-500">
           {campaign.supporterCount} supporters
-        </div>
+        </p>
       </div>
     </Link>
   );

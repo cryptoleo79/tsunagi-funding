@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
 import { formatAda, formatUsd, formatAdaUsd } from "@/lib/domain/format";
 import type { OracleStatus } from "@/lib/oracle/types";
@@ -151,6 +152,27 @@ export default function OracleProofPage() {
             pledgedAda={25000}
             goalUsd={15000}
           />
+        </div>
+
+        {/* Try live settlements */}
+        <div className="mt-16 border-t border-zinc-800 pt-8">
+          <p className="text-xs uppercase tracking-wider text-zinc-500 mb-4">
+            See it in action
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/campaigns/demo-1/close"
+              className="rounded-lg border border-zinc-700/50 px-4 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+            >
+              Funded Settlement
+            </Link>
+            <Link
+              href="/campaigns/demo-2/close"
+              className="rounded-lg border border-zinc-700/50 px-4 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-600 hover:text-white"
+            >
+              Refund Settlement
+            </Link>
+          </div>
         </div>
 
         {/* Technical details */}

@@ -4,29 +4,30 @@
 
 Run `npm install && npm run dev`, then open http://localhost:3000.
 
-## Where to click
+## Recommended click path
 
-1. **Homepage** (`/`) — overview of the product with three demo campaigns.
-   The hero links directly to a campaign, the live oracle proof, and the
-   settlement demo.
+1. **Homepage** (`/`) — product overview with featured campaign, how it works,
+   why oracle-native crowdfunding, closing soon, and all campaigns.
 
-2. **Campaign detail** (`/campaigns/demo-1`) — shows the "Afrobeats on
-   Chain" campaign with the live oracle rate in the pledge panel. Click
-   "Settle Campaign" to proceed to settlement.
+2. **Campaign detail** (`/campaigns/demo-1`) — the Afrobeats on Chain campaign
+   with story, supporter perks, use of funds, updates, supporters, and FAQ.
+   The sidebar shows the live oracle rate. Click "Settle Campaign".
 
-3. **Settlement** (`/campaigns/demo-1/close`) — the settlement page fetches
-   the live oracle price and determines whether the campaign met its USD
-   goal. The outcome banner shows "Campaign Funded" or "Supporters Refunded"
-   with full proof details.
+3. **Settlement — funded** (`/campaigns/demo-1/close`) — the settlement
+   decision shows the 5-step math, threshold bar, and verdict. Below, the
+   Settlement Certificate lists every datum field with a "Why this price is
+   trustworthy" explanation. Use the links at the bottom to try other
+   settlements.
 
-4. **Try a second campaign** — `/campaigns/demo-2/close` shows a campaign
-   that falls short of its goal, resulting in a refund outcome.
+4. **Settlement — refund** (`/campaigns/demo-2/close`) — same oracle, same
+   math, different outcome. The Accra Summit falls short of its $10k goal,
+   resulting in "Supporters Refunded".
 
-5. **Oracle proof** (`/demo/oracle-proof`) — the live oracle status panel
-   shows mode, price, feed, source, and timestamp. Below, two canned
-   outcome cards show release vs refund.
+5. **Live Oracle Proof** (`/demo/oracle-proof`) — interactive oracle status
+   panel with refresh, two outcome examples, and technical details. Links at
+   the bottom connect back to live settlements.
 
-6. **Oracle API** — open `/api/oracle` in a browser or run:
+6. **Oracle API** — open `/api/oracle` or run:
 
    ```bash
    curl http://localhost:3000/api/oracle
@@ -46,5 +47,7 @@ Run `npm install && npm run dev`, then open http://localhost:3000.
 
 - The `/api/oracle` response contains `"status": "live"` with a real price
 - The settlement pages use the live oracle to determine outcomes
-- The oracle proof page shows a green "Live" chip next to the title
+- The Settlement Certificate includes raw integer, precision, source, timestamp
 - Different campaigns produce different settlement outcomes
+- Each campaign page shows tailored supporter perks and a refund protection line
+- Navigation between settlements is seamless (links at bottom of each close page)

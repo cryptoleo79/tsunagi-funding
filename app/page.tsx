@@ -3,7 +3,7 @@ import { SiteShell } from "@/components/layout/site-shell";
 import { CampaignCard } from "@/components/campaign/campaign-card";
 import { demoCampaigns } from "@/lib/domain/demo-data";
 import { daysUntil } from "@/lib/utils/dates";
-import { calculateUsdRaised } from "@/lib/domain/campaign";
+import { calculateUsdRaised, calculateProgress } from "@/lib/domain/campaign";
 import { getMockPrice } from "@/lib/oracle/mock";
 import { formatUsd, formatAda } from "@/lib/domain/format";
 
@@ -13,6 +13,8 @@ export default function Home() {
     .filter((c) => daysUntil(c.closesAt) > 0)
     .sort((a, b) => daysUntil(a.closesAt) - daysUntil(b.closesAt));
   const oracle = getMockPrice();
+  const featuredRaised = calculateUsdRaised(featured.pledgedAda, oracle.price);
+  const featuredProgress = calculateProgress(featured.goalUsd, featuredRaised);
 
   return (
     <SiteShell>
@@ -73,8 +75,23 @@ export default function Home() {
                 <p className="mt-4 text-sm text-zinc-400 leading-relaxed max-w-xl">
                   {featured.description}
                 </p>
-                <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-zinc-400">
-                  <span>{formatUsd(calculateUsdRaised(featured.pledgedAda, oracle.price))} raised</span>
+                <div className="mt-6">
+                  <div className="flex justify-between text-sm mb-2">
+                    <span className="text-zinc-200">
+                      {formatUsd(featuredRaised)} raised
+                    </span>
+                    <span className="text-zinc-400">
+                      {(featuredProgress * 100).toFixed(0)}%
+                    </span>
+                  </div>
+                  <div className="h-1.5 rounded-full bg-zinc-800">
+                    <div
+                      className="h-full rounded-full bg-emerald-500"
+                      style={{ width: `${Math.min(featuredProgress * 100, 100).toFixed(1)}%` }}
+                    />
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-zinc-400">
                   <span>{formatAda(featured.pledgedAda)} pledged</span>
                   <span>{featured.supporterCount} supporters</span>
                   <span>{daysUntil(featured.closesAt)} days left</span>
@@ -115,6 +132,38 @@ export default function Home() {
               number="3"
               title="Oracle settles at close"
               description="The live Charli3 ADA/USD oracle determines if the pledged ADA meets the USD goal. Funds are released or supporters are refunded."
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Why oracle-native crowdfunding */}
+      <section className="border-t border-zinc-800 py-24">
+        <div className="mx-auto max-w-5xl px-6">
+          <h2 className="text-xl font-semibold text-white">
+            Why oracle-native crowdfunding
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-zinc-400 leading-relaxed">
+            ADA fluctuates. A campaign that looks fully funded today might fall
+            short tomorrow. Without a trusted on-chain price, neither creators
+            nor supporters can agree on the outcome.
+          </p>
+          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <Principle
+              title="ADA in, USD goal"
+              description="Supporters pledge in ADA. Creators set their target in stable USD. The oracle bridges both at settlement."
+            />
+            <Principle
+              title="Live settlement"
+              description="At campaign close, the Charli3 ADA/USD price is fetched live from Cardano to determine the outcome."
+            />
+            <Principle
+              title="Fair release or refund"
+              description="Goal met? Funds go to the creator. Goal not met? Every supporter gets their ADA back. No ambiguity."
+            />
+            <Principle
+              title="Transparent proof"
+              description="Every settlement includes the oracle price, raw datum, source, and timestamp — fully verifiable on-chain."
             />
           </div>
         </div>
@@ -184,6 +233,23 @@ function Step({
       </div>
       <h3 className="mt-4 text-sm font-medium text-zinc-100">{title}</h3>
       <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
+        {description}
+      </p>
+    </div>
+  );
+}
+
+function Principle({
+  title,
+  description,
+}: {
+  title: string;
+  description: string;
+}) {
+  return (
+    <div className="rounded-lg border border-zinc-800 p-5">
+      <h3 className="text-sm font-medium text-zinc-100">{title}</h3>
+      <p className="mt-2 text-xs text-zinc-400 leading-relaxed">
         {description}
       </p>
     </div>
