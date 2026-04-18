@@ -66,6 +66,7 @@ export interface FaqEntry {
 export interface CampaignContent {
   story: string;
   creatorBio: string;
+  supporterPerks: string[];
   updates: CampaignUpdate[];
   supporters: SupporterMessage[];
   useOfFunds: FundAllocation[];

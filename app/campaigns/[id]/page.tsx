@@ -7,6 +7,7 @@ import { CampaignUpdates } from "@/components/campaign/campaign-updates";
 import { SupporterMessages } from "@/components/campaign/supporter-messages";
 import { UseOfFunds } from "@/components/campaign/use-of-funds";
 import { CampaignFaq } from "@/components/campaign/campaign-faq";
+import { SupporterValue } from "@/components/campaign/supporter-value";
 import { getDemoCampaign } from "@/lib/domain/demo-data";
 import { getCampaignContent } from "@/lib/domain/demo-content";
 
@@ -40,6 +41,9 @@ export default async function CampaignPage({ params }: Props) {
                   creatorBio={content.creatorBio}
                   creatorName={campaign.creatorName}
                 />
+
+                <div className="border-t border-zinc-800/60" />
+                <SupporterValue perks={content.supporterPerks} />
 
                 <div className="border-t border-zinc-800/60" />
                 <UseOfFunds allocations={content.useOfFunds} />

@@ -10,6 +10,13 @@ function daysAgo(days: number): Date {
 
 const content: Record<string, CampaignContent> = {
   "demo-1": {
+    supporterPerks: [
+      "Six stem CNFTs — one per track — proportional to your pledge",
+      "Name credited on the EP's on-chain metadata",
+      "Early access to final masters before public release",
+      "Invitation to the Accra listening party",
+      "Exclusive behind-the-scenes studio clips",
+    ],
     story:
       "This EP has been three years in the making. I grew up in Osu, Accra, surrounded by highlife and hip-hop, but it was the first time I heard Afrobeats fused with electronic production that everything clicked. Since then I've been writing, recording demos in my bedroom, and saving up to get into a proper studio.\n\nTSUNAGI lets me set a clear funding target in USD while supporters pledge in ADA — and at close, the live oracle decides the outcome. No middlemen, no platform fees skimming 10%. Just creators and the people who believe in them.\n\nThe six tracks on this EP blend Twi-language vocals with Afrobeats rhythms and ambient synth textures. Every stem — vocals, drums, bass, synths — will be minted as Cardano native assets, so supporters literally own a piece of the music. Think of it as a decentralized album credits page.\n\nFunds go directly toward studio time at Sandbox Studios in East Legon, professional mixing by Kwame Boateng, mastering at Sterling Sound, and CNFT minting costs. Whatever remains covers promotion and a small listening-party event in Accra.",
 
@@ -91,6 +98,12 @@ const content: Record<string, CampaignContent> = {
   },
 
   "demo-2": {
+    supporterPerks: [
+      "Reserved seat at the two-day summit",
+      "Access to all livestreamed sessions and recordings",
+      "Name listed on the event supporter wall",
+      "Priority registration for the Plutus workshop",
+    ],
     story:
       "West Africa has one of the fastest-growing Cardano communities in the world, but there's never been a dedicated in-person event for builders in the region. That changes now.\n\nThe Cardano Community Summit in Accra brings together stake pool operators, DApp developers, governance delegates, and newcomers for two days of talks, workshops, and networking. We're hosting at the Accra International Conference Centre with simultaneous translation in English, French, and Twi.\n\nThe summit isn't a corporate conference — it's a community event. Speakers include local SPOs, Catalyst fund recipients, and developers who've shipped real projects on mainnet. We're also running a half-day Plutus workshop for developers who want hands-on experience writing validators.\n\nWe chose TSUNAGI because the oracle-based settlement gives our supporters confidence. They know exactly how the outcome is determined — no ambiguity, no trust required. If we fall short, they get their ADA back. If we hit the target, the funds go directly to making this event happen.",
 
@@ -160,6 +173,13 @@ const content: Record<string, CampaignContent> = {
   },
 
   "demo-3": {
+    supporterPerks: [
+      "Early access to templates and guides before public launch",
+      "GitHub contributor credit in the project README",
+      "Vote on which additional templates get built next",
+      "Access to a private Discord channel for Q&A with the author",
+      "Six months of priority support for integration questions",
+    ],
     story:
       "Learning Plutus is hard. The documentation assumes you already know Haskell, the tooling changes every few months, and most tutorials are outdated by the time they're published. I've been through that pain myself, and I want to make it easier for the next wave of developers.\n\nThe Plutus Starter Kit is a collection of production-ready smart contract templates with step-by-step guides written for developers who know TypeScript or Python but are new to Cardano. Each template includes a validator, off-chain code, and a test harness that runs on preprod.\n\nThe kit covers four core patterns: a simple payment validator, a time-locked vesting contract, a minting policy with redeemer logic, and a basic escrow. Each comes with a written walkthrough explaining not just what the code does, but why it's structured that way.\n\nEverything will be open source under MIT. The guides will be hosted as a free Gitbook. Funding covers my time to write, review, and maintain the templates for at least six months after release.",
 
