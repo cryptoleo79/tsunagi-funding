@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import Link from "next/link";
 import { SiteShell } from "@/components/layout/site-shell";
-import { formatAda, formatUsd, formatAdaUsd } from "@/lib/domain/format";
+import { formatAdaUsd } from "@/lib/domain/format";
 import type { OracleStatus } from "@/lib/oracle/types";
 
 interface OracleData {
@@ -57,6 +57,8 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
     }
   }, []);
 
+  const isLive = data.status === "live";
+
   return (
     <SiteShell>
       <div className="mx-auto max-w-3xl px-6 py-20">
@@ -92,11 +94,13 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
             <span className="text-4xl font-semibold text-white tabular-nums tracking-tight">
               {data.price > 0 ? formatAdaUsd(data.price) : "—"}
             </span>
-            <span className="text-sm font-medium text-zinc-300">ADA/USD</span>
+            <span className="text-sm font-medium text-zinc-300">
+              ADA/USD{isLive ? " (Live)" : ""}
+            </span>
           </div>
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 text-sm">
-            <Row label="Mode" value={data.status === "live" ? "Live" : data.status === "fallback" ? "Fallback" : "Mock"} />
+            <Row label="Mode" value={isLive ? "Live" : data.status === "fallback" ? "Fallback" : "Mock"} />
             <Row label="Feed" value="ADA/USD" />
             <Row label="Source" value={data.source || "—"} />
             <Row
@@ -134,33 +138,13 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
           </p>
         </div>
 
-        {/* Outcome examples */}
-        <h2 className="mt-16 text-lg font-semibold text-white">
-          Settlement Outcomes
-        </h2>
-        <p className="mt-2 text-sm text-zinc-400">
-          Same campaign, different ADA/USD rates — two possible outcomes.
-        </p>
-
-        <div className="mt-6 grid gap-6 sm:grid-cols-2">
-          <OutcomeCard
-            outcome="funded"
-            oraclePrice={0.68}
-            pledgedAda={25000}
-            goalUsd={15000}
-          />
-          <OutcomeCard
-            outcome="refund"
-            oraclePrice={0.45}
-            pledgedAda={25000}
-            goalUsd={15000}
-          />
-        </div>
-
         {/* Try live settlements */}
-        <div className="mt-16 border-t border-zinc-800 pt-8">
+        <div className="mt-12 border-t border-zinc-800 pt-8">
           <p className="text-xs uppercase tracking-wider text-zinc-500 mb-4">
             See it in action
+          </p>
+          <p className="text-sm text-zinc-400 mb-5">
+            These settlements use the live oracle price above to determine the outcome.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
@@ -179,7 +163,7 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
         </div>
 
         {/* Technical details */}
-        <details className="mt-16 group">
+        <details className="mt-12 group">
           <summary className="cursor-pointer text-xs font-medium uppercase tracking-wider text-zinc-500 hover:text-zinc-300 transition-colors">
             Technical Details
           </summary>
@@ -217,60 +201,6 @@ function LiveChip({ status }: { status: OracleStatus }) {
     <span className="inline-flex items-center rounded-full border border-zinc-600 px-2.5 py-0.5 text-xs text-zinc-400">
       Mock
     </span>
-  );
-}
-
-function OutcomeCard({
-  outcome,
-  oraclePrice,
-  pledgedAda,
-  goalUsd,
-}: {
-  outcome: "funded" | "refund";
-  oraclePrice: number;
-  pledgedAda: number;
-  goalUsd: number;
-}) {
-  const usdRaised = pledgedAda * oraclePrice;
-  const funded = outcome === "funded";
-
-  return (
-    <div
-      className={`rounded-xl border p-5 ${
-        funded
-          ? "border-emerald-800/40 bg-emerald-950/30"
-          : "border-amber-800/40 bg-amber-950/30"
-      }`}
-    >
-      <h3
-        className={`text-sm font-semibold ${
-          funded ? "text-emerald-300" : "text-amber-300"
-        }`}
-      >
-        {funded ? "Funds Released" : "Supporters Refunded"}
-      </h3>
-      <p className="mt-1 text-xs text-zinc-400">
-        {funded
-          ? "Goal met — ADA released to creator"
-          : "Goal not met — ADA returned to supporters"}
-      </p>
-      <div className="mt-4 space-y-2 text-sm">
-        <Row label="Oracle Price" value={formatAdaUsd(oraclePrice)} />
-        <Row label="Backed" value={formatAda(pledgedAda)} />
-        <Row label="USD Value" value={formatUsd(usdRaised)} />
-        <Row label="Goal" value={formatUsd(goalUsd)} />
-        <div className="border-t border-zinc-800 pt-2 flex justify-between">
-          <span className="text-zinc-400">Outcome</span>
-          <span
-            className={`font-medium ${
-              funded ? "text-emerald-400" : "text-amber-400"
-            }`}
-          >
-            {funded ? "Release" : "Refund"}
-          </span>
-        </div>
-      </div>
-    </div>
   );
 }
 
