@@ -16,11 +16,11 @@ Everything in this repository was built from scratch for the hackathon:
 
 - Next.js application with TypeScript and Tailwind CSS
 - Domain model for campaigns, pledges, and settlement
-- Settlement logic using oracle price input to determine release or refund
-- Live Charli3 ADA/USD oracle integration via Kupo with Plutus CBOR datum decoding
+- Domain logic using oracle price input to display a simulated release or refund outcome
+- Charli3 ADA/USD preprod lookup via Kupo with Plutus CBOR datum decoding
 - Mock oracle layer with graceful fallback when the live feed is unavailable
 - Five working pages: home, create campaign, campaign detail, settlement, oracle demo
-- Oracle API endpoint serving live on-chain data
+- Oracle API endpoint reporting preprod data when available or labeled mock fallback
 - Documentation and oracle integration notes
 
 No code was carried over from other TSUNAGI repositories.

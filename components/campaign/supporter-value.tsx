@@ -19,8 +19,8 @@ export function SupporterValue({ perks }: SupporterValueProps) {
         ))}
       </ul>
       <p className="mt-5 text-xs text-zinc-500 leading-relaxed">
-        If the campaign does not meet its USD goal at close, supporters are
-        refunded automatically using the live oracle price.
+        These perks and pledge amounts are demo content. A below-goal calculation
+        displays a refund scenario; it does not return ADA.
       </p>
     </section>
   );

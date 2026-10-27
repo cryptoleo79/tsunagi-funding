@@ -1,61 +1,51 @@
 # Demo Script
 
-Target length: 3–4 minutes.
+Target length: 3–4 minutes. This is a prototype demonstration. Campaigns,
+pledges, supporters and outcomes are sample data; no ADA is held or moved.
 
 ## 1. Intro (30 seconds)
 
-TSUNAGI Funding is oracle-native crowdfunding on Cardano. Creators set a
-campaign goal in USD, supporters back it in ADA, and at close the live
-Charli3 ADA/USD oracle determines whether funds are released or refunded.
+TSUNAGI Funding represents ADA pledge amounts against USD campaign goals.
+A Charli3 ADA/USD preprod lookup, when available, or a labeled mock fallback
+feeds a simulated release or refund outcome. The app does not submit pledges,
+operate escrow, or execute release/refund transactions.
 
-## 2. The problem (30 seconds)
+## 2. The question (30 seconds)
 
-ADA fluctuates. A campaign that looked fully funded yesterday might fall
-short today — or vice versa. Without a trusted on-chain price, neither
-creators nor supporters can agree on the outcome. The oracle provides a
-verifiable settlement rate that both sides can trust.
+An ADA/USD price changes the USD value of a fixed ADA amount. This prototype
+shows how a reported oracle price could be used in a campaign threshold
+calculation. Price freshness checks and on-chain settlement are future work.
 
 ## 3. Campaign flow (60 seconds)
 
-Open the homepage. Show the featured campaign card with progress bar, the
-"How it works" steps, and the "Why oracle-native crowdfunding" section.
+Open the homepage and explain its sample campaign values. Open
+`/campaigns/demo-1`. Point out the fictional story, sample pledge amounts,
+perks and the price-input panel. The panel labels a preprod reading as
+`Live`, or reports `Mock` / `Fallback` and the fallback reason.
 
-Click into "Afrobeats on Chain" (`/campaigns/demo-1`). Point out:
-- The campaign story, creator bio, and supporter perks
-- The "What supporters receive" section with tailored bullet points
-- The refund protection line at the bottom of that section
-- The live oracle rate in the sidebar pledge panel (with a "Live" chip)
+Click **Calculate Demo Outcome**. The close page calculates a result when
+it loads; it is not a transfer receipt.
 
-Click "Settle Campaign" to go to the close page.
+## 4. Outcome (60 seconds)
 
-## 4. Settlement (60 seconds)
+The **Simulated Outcome** card compares the sample ADA amount and USD goal.
+The **Demo Outcome Inputs** panel shows price, source, timestamp, reported
+mode and the release/refund scenario. It does not carry the original raw datum.
+Use `/campaigns/demo-2/close` for another sample calculation. Its outcome
+can vary with the price input; do not promise a particular verdict.
 
-The settlement page shows the outcome in one glance:
+## 5. Oracle price demo (30 seconds)
 
-- The Settlement Decision card walks through the 5-step math with a
-  threshold bar and verdict
-- The Settlement Certificate below it shows every oracle field: campaign,
-  goal, ADA price, raw integer, precision, source, timestamp, USD value,
-  and final outcome
-- The "Why this price is trustworthy" section explains the oracle's role
+Open `/demo/oracle-proof`. Inspect the source, timestamp and mode. Click
+**Refresh** to request a new report. The linked campaign pages make their
+own lookup, so they may show a different value or fallback state.
 
-Use the links at the bottom to try the Accra Summit (`/campaigns/demo-2/close`):
-- Same oracle, same math — but the goal is $10k, so the outcome is
-  "Supporters Refunded"
-
-## 5. Live oracle proof (30 seconds)
-
-Open `/demo/oracle-proof`. The status panel shows the live Charli3 price
-with source, timestamp, and a "Live" indicator. Below, two outcome cards
-show how the same pledge amount produces release or refund at different
-ADA/USD rates.
-
-Optionally run `curl http://localhost:3000/api/oracle` to show the raw
-JSON response.
+Optionally run `curl http://localhost:3000/api/oracle` and inspect `status`:
+`live` indicates a reported Charli3 preprod lookup; `mock` and `fallback`
+indicate demo data. The API does not return a raw datum or execute settlement.
 
 ## 6. Wrap-up (30 seconds)
 
-The oracle is not decorative — it is the mechanism that decides every
-settlement. The full path from Kupo query to Plutus CBOR datum decode
-to price extraction is live on Cardano preprod. Every settlement includes
-a certificate with the raw datum, precision, and source — fully verifiable.
+The implemented boundary is price lookup plus simulated domain math.
+Wallet pledge transactions, escrow, price-age rejection and on-chain
+release/refund transactions remain unimplemented.

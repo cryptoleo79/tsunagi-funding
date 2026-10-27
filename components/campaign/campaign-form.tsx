@@ -51,12 +51,12 @@ export function CampaignForm() {
         disabled={submitted}
         className="w-full rounded-lg bg-zinc-100 py-3 text-sm font-medium text-zinc-900 transition-colors hover:bg-white disabled:opacity-50"
       >
-        {submitted ? "Creating..." : "Create Campaign"}
+        {submitted ? "Opening demo..." : "Open demo campaign"}
       </button>
 
       <p className="text-xs text-zinc-600 leading-relaxed">
         Demo mode — the form redirects to a sample campaign to show the
-        full flow from campaign detail through oracle-based settlement.
+        demo flow from campaign detail through a simulated outcome.
       </p>
     </form>
   );

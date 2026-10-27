@@ -3,16 +3,16 @@
 ## Done
 
 - [x] Project scaffold (Next.js, TypeScript, Tailwind)
-- [x] Domain model and settlement logic
+- [x] Domain model and simulated outcome logic
 - [x] Mock oracle layer with graceful fallback
 - [x] Homepage with campaign cards
 - [x] Campaign creation form
 - [x] Campaign detail page with oracle panel
-- [x] Settlement page with proof display
+- [x] Demo outcome page with price/source display
 - [x] Interactive oracle demo page
-- [x] Live Charli3 ADA/USD feed via Kupo on preprod
+- [x] Charli3 ADA/USD preprod lookup via Kupo
 - [x] Plutus CBOR datum decoder for Charli3 ODV format
-- [x] Oracle API endpoint returning live on-chain data
+- [x] Oracle API endpoint reporting preprod or labeled mock price data
 
 ## Next
 

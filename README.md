@@ -3,9 +3,10 @@
 **Connecting People Through ADA Funding**
 
 TSUNAGI Funding is an oracle-native crowdfunding prototype on Cardano.
-Creators raise in ADA against a USD-denominated goal, and at campaign close
-a live Charli3 ADA/USD oracle determines whether the campaign succeeded or
-whether supporters are refunded.
+It models ADA pledges against a USD-denominated goal. When a demo close
+page loads, a Charli3 ADA/USD preprod lookup, when available, or labeled
+mock data determines a displayed outcome. Real pledges, escrow custody, and release/refund transactions are
+not implemented in this prototype.
 
 ## Why the oracle matters
 
@@ -14,26 +15,28 @@ ADA. The ADA/USD exchange rate moves between the time a campaign launches
 and when it closes. Without an oracle, there is no trustworthy way to
 determine whether a campaign actually met its USD target.
 
-The oracle is not decorative — it is the mechanism that decides whether funds
-are released to the creator or returned to supporters. TSUNAGI Funding reads
-the Charli3 ADA/USD price feed directly from the Cardano chain via Kupo and
-uses it as the settlement authority.
+The oracle supplies the exchange-rate input for a simulated campaign outcome;
+it does not move funds. In live mode, TSUNAGI Funding reads the Charli3
+ADA/USD preprod feed through Kupo. If live data is unavailable, the app uses
+explicitly labeled mock data.
 
 ## Current status
 
-This is a hackathon prototype. The core domain logic, settlement engine,
-live oracle integration, and frontend are functional.
+This is a hackathon prototype with domain outcome logic, an oracle API route,
+and a frontend. It has no CIP-30 pledge transaction flow, escrow contract,
+on-chain release/refund transactions, or production campaign persistence.
 
-- **Live Charli3 ADA/USD oracle integration is working on preprod**
-- `/api/oracle` returns live price data from the on-chain Charli3 feed
-- The settlement flow uses live oracle data to determine campaign outcomes
+- **Charli3 ADA/USD integration has been exercised on preprod**
+- `/api/oracle` reports the source and status of live or fallback price data
+- Domain logic uses the reported price to calculate a simulated outcome
 - The frontend is demo-ready but still prototype-stage
 - If the live feed is unavailable, the app falls back to mock data with an
   explicit reason shown in the UI
 
-## Verified live oracle milestone
+## Historical preprod oracle observation
 
-The live oracle path has been verified against real Charli3 preprod data:
+The live oracle path was exercised against Charli3 preprod data. The following
+price is a historical observation, not a current quote:
 
 | Field | Value |
 |---|---|
@@ -44,41 +47,40 @@ The live oracle path has been verified against real Charli3 preprod data:
 | Source | Charli3 ADA/USD preprod (ODV feed) |
 | Datum format | Plutus CBOR, decoded from the real on-chain datum |
 
-The datum structure (`Constr → Constr → Map`) is decoded from the actual
-Charli3 ODV contract output, not simulated.
+The recorded datum structure (`Constr → Constr → Map`) came from a
+Charli3 ODV preprod contract output. The current UI carries a normalized
+price, source and timestamp, not the original raw datum or transaction proof.
 
 ## Architecture at a glance
 
 ```mermaid
 flowchart LR
-    A[Creator sets USD goal] --> B[Supporters pledge ADA]
-    B --> C[Campaign closes]
-    C --> D[Charli3 ADA/USD oracle]
+    A[Creator sets USD goal] --> B[Prototype represents ADA pledges]
+    B --> C[Demo close page loads]
+    C --> D[Preprod price or mock fallback]
     D --> E{Goal met?}
-    E -- Yes --> F[Funds released]
-    E -- No --> G[Supporters refunded]
+    E -- Yes --> F[Intended release outcome shown]
+    E -- No --> G[Intended refund outcome shown]
 ```
 
-## Product flow
+## Prototype flow
 
-1. Creator sets a campaign with a USD-denominated funding goal
-2. Supporters pledge ADA to the campaign
-3. Campaign reaches its close date
-4. The app fetches the current ADA/USD price from the Charli3 on-chain feed
-5. `pledged_ada * ada_usd_price` is compared to `goal_usd`
-6. If the goal is met, funds are released to the creator
-7. If not, pledges are returned to supporters
+1. A creator configures a demo campaign with a USD-denominated goal.
+2. The UI represents ADA pledges; it does not submit pledge transactions.
+3. When a demo close page loads, the app requests an ADA/USD price and labels preprod data or mock fallback.
+4. Domain logic compares `pledged_ada * ada_usd_price` with `goal_usd`.
+5. The UI displays the intended release or refund outcome. Wallet transactions, escrow, and fund movement remain future work.
 
 ## Routes
 
 | Route | Description |
 |---|---|
 | `/` | Homepage with campaign cards and product overview |
-| `/campaigns/new` | Create a new campaign (demo mode) |
-| `/campaigns/[id]` | Campaign detail with pledge panel and live oracle rate |
-| `/campaigns/[id]/close` | Settlement page with oracle proof and outcome |
-| `/demo/oracle-proof` | Interactive oracle demo with live fetch |
-| `/api/oracle` | Oracle price API — returns live Charli3 data (JSON) |
+| `/campaigns/new` | Demo form that redirects to a sample campaign; no persistence |
+| `/campaigns/[id]` | Demo campaign detail with pledge panel and reported oracle rate |
+| `/campaigns/[id]/close` | Demo outcome page with price/source display; no fund transfer |
+| `/demo/oracle-proof` | Interactive oracle demo with source/status and refresh |
+| `/api/oracle` | Oracle price API — reports live preprod or labeled mock data (JSON) |
 
 ## Local setup
 
@@ -113,15 +115,16 @@ unreachable, the app falls back with an explicit reason.
 
 To verify the oracle integration:
 
-1. **`/api/oracle`** — hit this endpoint to see the raw JSON response from
-   the live Charli3 feed. Look for `"status": "live"` and a real price value.
-2. **`/demo/oracle-proof`** — this page shows the live oracle status panel
-   at the top, then lets you adjust parameters to see how settlement outcomes
-   change. Click "Refresh" to re-fetch the live price.
-3. **`/campaigns/1`** — a demo campaign showing the live ADA/USD rate in the
+1. **`/api/oracle`** — inspect the JSON `status` and source. A configured,
+   available preprod feed can report `"status": "live"`; otherwise inspect the
+   labeled mock fallback and its reason.
+2. **`/demo/oracle-proof`** — this page shows the oracle status panel
+   at the top. Click "Refresh" to refresh the reported price and source status;
+   the linked campaign pages calculate example outcomes from demo values.
+3. **`/campaigns/demo-1`** — a demo campaign showing the reported ADA/USD rate in the
    pledge panel.
-4. **`/campaigns/1/close`** — the settlement page that uses the live oracle
-   to determine whether the campaign goal was met.
+4. **`/campaigns/demo-1/close`** — the outcome page calculates whether the demo goal
+   was met; it does not release or refund ADA.
 
 ### Quick verification
 
@@ -131,8 +134,9 @@ From the terminal, with the dev server running:
 curl http://localhost:3000/api/oracle
 ```
 
-Expected response includes `"status": "live"`, a real ADA/USD price, and
-`"source"` referencing Charli3 preprod with a slot number.
+With a configured and reachable preprod feed, the response can include
+`"status": "live"` and a Charli3 preprod source/slot. Otherwise it reports
+mock data with a fallback reason. Neither response executes a settlement.
 
 The oracle layer lives in `lib/oracle/`. The datum decoder in `decode.ts`
 handles real Plutus CBOR from the Charli3 ODV contract.
@@ -143,7 +147,7 @@ handles real Plutus CBOR from the Charli3 ODV contract.
 TSUNAGI Funding uses the TSUNAGI name and concept of connection, but this repository is separate from the TSUNAGI node project.
 
 ### New work built for this hackathon
-Everything in this repository was built as a fresh hackathon project for oracle-native crowdfunding on Cardano, including the campaign flow, settlement UI, oracle API route, and live Charli3 ADA/USD integration.
+This repository contains a hackathon prototype for oracle-informed crowdfunding on Cardano: demo campaign pages, simulated outcome UI, an oracle API route, and a preprod Charli3 ADA/USD lookup with mock fallback. Its campaign stories, supporter counts, pledge amounts, and outcomes are demo data.
 
 ## Oracle integration
 
@@ -160,7 +164,7 @@ The oracle layer in `lib/oracle/`:
 | `charli3.ts` | Kupo fetch, datum decode, price extraction |
 | `client.ts` | Mode switching (live/mock) with graceful fallback |
 | `mock.ts` | Static demo prices |
-| `settlement.ts` | Bridges oracle output into domain settlement |
+| `settlement.ts` | Bridges oracle output into simulated domain outcome logic |
 
 ## Next steps
 

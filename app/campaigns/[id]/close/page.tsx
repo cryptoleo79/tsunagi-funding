@@ -42,9 +42,9 @@ export default async function CloseCampaignPage({ params }: Props) {
           {campaign.title}
         </h1>
         <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
-          Settlement determined by the live Charli3 ADA/USD oracle on
-          Cardano preprod. The outcome below was calculated at the moment
-          this page loaded.
+          Simulated outcome calculated when this page loaded. The input is a
+          Charli3 preprod price when available, or a labeled mock fallback.
+          No pledge, escrow, release or refund transaction occurs.
         </p>
 
         <div className="mt-10 space-y-6">
@@ -63,7 +63,7 @@ export default async function CloseCampaignPage({ params }: Props) {
         {/* Demo navigation */}
         <div className="mt-10 border-t border-zinc-800 pt-8">
           <p className="text-xs uppercase tracking-wider text-zinc-500 mb-4">
-            Try another settlement
+            Try another demo outcome
           </p>
           <div className="flex flex-wrap gap-3">
             {demoCampaigns
@@ -81,7 +81,7 @@ export default async function CloseCampaignPage({ params }: Props) {
               href="/demo/oracle-proof"
               className="rounded-lg border border-zinc-700/50 px-4 py-2.5 text-sm text-zinc-400 transition-colors hover:border-zinc-600 hover:text-zinc-200"
             >
-              Live Oracle Proof
+              Oracle Price Demo
             </Link>
           </div>
         </div>

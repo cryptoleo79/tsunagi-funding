@@ -20,7 +20,7 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
     <div>
       <div className="flex items-center gap-3 mb-4">
         <Chip
-          label={campaign.status === "active" ? "Active" : "Closed"}
+          label={campaign.status === "active" ? "Demo active" : "Demo closed"}
           variant={campaign.status === "active" ? "success" : "default"}
         />
         <span className="text-sm text-zinc-400">
@@ -53,8 +53,8 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
 
       <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
         <Stat label="Goal" value={formatUsd(campaign.goalUsd)} />
-        <Stat label="Pledged" value={formatAda(campaign.pledgedAda)} />
-        <Stat label="Supporters" value={campaign.supporterCount.toString()} />
+        <Stat label="Demo pledges" value={formatAda(campaign.pledgedAda)} />
+        <Stat label="Demo supporters" value={campaign.supporterCount.toString()} />
         <Stat
           label="Closes"
           value={remaining > 0 ? `${remaining} days` : "Ended"}
@@ -63,8 +63,8 @@ export function CampaignHero({ campaign }: CampaignHeroProps) {
       </div>
 
       <p className="mt-8 text-xs text-zinc-500 leading-relaxed">
-        Campaign display values are estimated for readability. Final
-        settlement is determined at close using the live Charli3 oracle.
+        These are sample campaign values. A preprod oracle price, when available,
+        or labeled mock fallback calculates a simulated outcome at page load.
       </p>
     </div>
   );

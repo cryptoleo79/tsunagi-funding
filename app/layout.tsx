@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "TSUNAGI Funding",
-  description: "Oracle-native crowdfunding on Cardano. Connecting people through ADA funding.",
+  description: "Cardano crowdfunding prototype with preprod oracle lookup and simulated outcomes.",
 };
 
 export default function RootLayout({

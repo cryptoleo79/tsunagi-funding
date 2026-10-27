@@ -65,21 +65,21 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
         {/* Header */}
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-semibold text-white">
-            Live Oracle Proof
+            Oracle Price Demo
           </h1>
           <LiveChip status={data.status} />
         </div>
         <p className="mt-3 text-sm text-zinc-400 max-w-xl leading-relaxed">
-          The live Charli3 ADA/USD oracle on Cardano preprod determines
-          whether funds are released to the creator or returned to
-          supporters at campaign close.
+          This page displays a Charli3 ADA/USD preprod lookup when available,
+          or a labeled mock fallback. Demo campaign outcomes use the price
+          as an input; no ADA is released or refunded.
         </p>
 
         {/* Oracle price card */}
         <div className="mt-10 rounded-xl border border-zinc-700 bg-zinc-900 p-6 sm:p-8">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
-              Current Oracle Price
+              Reported ADA/USD Price
             </h3>
             <button
               onClick={refresh}
@@ -104,12 +104,6 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
             <Row label="Feed" value="ADA/USD" />
             <Row label="Source" value={data.source || "—"} />
             <Row
-              label="Raw Integer"
-              value={data.price > 0 ? Math.round(data.price * 1e6).toString() : "—"}
-              mono
-            />
-            <Row label="Precision" value="1e6" mono />
-            <Row
               label="Timestamp"
               value={data.timestamp ? new Date(data.timestamp).toLocaleString() : "—"}
             />
@@ -132,32 +126,32 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
           )}
 
           <p className="mt-6 text-xs text-zinc-500 leading-relaxed border-t border-zinc-800 pt-5">
-            This price is the settlement authority — not a display widget.
-            At campaign close it determines whether funds are released or
-            supporters are refunded.
+            This reported price feeds a simulated threshold calculation. The API
+            does not return the raw datum and this page is not proof of a
+            settlement transaction or transfer.
           </p>
         </div>
 
-        {/* Try live settlements */}
+        {/* Try demo outcomes */}
         <div className="mt-12 border-t border-zinc-800 pt-8">
           <p className="text-xs uppercase tracking-wider text-zinc-500 mb-4">
             See it in action
           </p>
           <p className="text-sm text-zinc-400 mb-5">
-            These settlements use the live oracle price above to determine the outcome.
+            The linked pages calculate demo outcomes using their own preprod lookup or labeled mock fallback.
           </p>
           <div className="flex flex-wrap gap-3">
             <Link
               href="/campaigns/demo-1/close"
               className="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-200 transition-colors hover:border-zinc-500 hover:text-white"
             >
-              Funded Settlement
+              Demo 1 outcome
             </Link>
             <Link
               href="/campaigns/demo-2/close"
               className="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-200 transition-colors hover:border-zinc-500 hover:text-white"
             >
-              Refund Settlement
+              Demo 2 outcome
             </Link>
           </div>
         </div>
@@ -168,12 +162,19 @@ export function OracleProofClient({ initialData }: OracleProofClientProps) {
             Technical Details
           </summary>
           <div className="mt-4 rounded-xl border border-zinc-700 bg-zinc-900 p-5">
-            <div className="grid gap-4 sm:grid-cols-2 text-sm">
-              <Row label="Datum Format" value="Plutus CBOR (ODV)" mono />
-              <Row label="Network" value="Cardano preprod" mono />
-              <Row label="Indexer" value="Kupo REST API" mono />
-              <Row label="Oracle Provider" value="Charli3" mono />
-            </div>
+            {isLive ? (
+              <div className="grid gap-4 sm:grid-cols-2 text-sm">
+                <Row label="Live-path decoder format" value="Plutus CBOR (ODV)" mono />
+                <Row label="Lookup network" value="Cardano preprod" mono />
+                <Row label="Lookup indexer" value="Kupo REST API" mono />
+                <Row label="Oracle provider" value="Charli3" mono />
+              </div>
+            ) : (
+              <p className="text-sm text-zinc-400">
+                This reading is mock data. The preprod lookup, Kupo indexer,
+                Charli3 provider and datum decoder did not supply this price.
+              </p>
+            )}
           </div>
         </details>
       </div>

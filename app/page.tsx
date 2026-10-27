@@ -28,10 +28,10 @@ export default function Home() {
             Connecting People Through ADA Funding
           </p>
           <p className="mt-8 max-w-2xl text-sm text-zinc-400 leading-relaxed sm:text-base">
-            Crowdfunding on Cardano where the outcome is decided by a live
-            on-chain oracle. Creators set a goal in USD, supporters back it
-            in ADA, and at campaign close the Charli3 ADA/USD price determines
-            whether funds are released or supporters are refunded.
+            A Cardano crowdfunding prototype. Demo campaigns represent ADA pledges
+            against USD goals. A preprod Charli3 ADA/USD price, when available,
+            or labeled mock data produces a simulated release or refund outcome.
+            No ADA is pledged, held or transferred.
           </p>
           <div className="mt-10 flex flex-wrap gap-3">
             <Link
@@ -44,13 +44,13 @@ export default function Home() {
               href="/demo/oracle-proof"
               className="rounded-lg border border-zinc-600 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
             >
-              Live Oracle Proof
+              Oracle Price Demo
             </Link>
             <Link
               href="/campaigns/demo-1/close"
               className="rounded-lg border border-zinc-600 px-5 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
             >
-              Settlement Demo
+              Outcome Demo
             </Link>
           </div>
         </div>
@@ -78,7 +78,7 @@ export default function Home() {
                 <div className="mt-6">
                   <div className="flex justify-between text-sm mb-2">
                     <span className="text-zinc-200">
-                      {formatUsd(featuredRaised)} raised
+                      {formatUsd(featuredRaised)} simulated value
                     </span>
                     <span className="text-zinc-400">
                       {(featuredProgress * 100).toFixed(0)}%
@@ -92,7 +92,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-xs text-zinc-400">
-                  <span>{formatAda(featured.pledgedAda)} pledged</span>
+                  <span>{formatAda(featured.pledgedAda)} demo pledges</span>
                   <span>{featured.supporterCount} supporters</span>
                   <span>{daysUntil(featured.closesAt)} days left</span>
                 </div>
@@ -115,7 +115,7 @@ export default function Home() {
             How it works
           </h2>
           <p className="mt-2 text-sm text-zinc-400">
-            Three steps from campaign creation to oracle-based settlement.
+            Three steps in the simulated campaign flow.
           </p>
           <div className="mt-10 grid gap-10 sm:grid-cols-3">
             <Step
@@ -125,13 +125,13 @@ export default function Home() {
             />
             <Step
               number="2"
-              title="Supporters back in ADA"
-              description="Supporters pledge ADA to campaigns they believe in. Pledges are held until the campaign closes."
+              title="Represent ADA pledges"
+              description="The prototype stores example pledge amounts as demo data. It does not submit transactions or hold ADA."
             />
             <Step
               number="3"
-              title="Oracle settles at close"
-              description="The live Charli3 ADA/USD oracle determines if the pledged ADA meets the USD goal. Funds are released or supporters are refunded."
+              title="Calculate a demo outcome"
+              description="A preprod price, when available, or mock fallback is compared with the demo goal. The result does not release or refund funds."
             />
           </div>
         </div>
@@ -151,19 +151,19 @@ export default function Home() {
           <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
             <Principle
               title="ADA in, USD goal"
-              description="Supporters pledge in ADA. Creators set their target in stable USD. The oracle bridges both at settlement."
+              description="The demo represents ADA pledges against a USD goal; no real pledge is submitted."
             />
             <Principle
-              title="Live settlement"
-              description="At campaign close, the Charli3 ADA/USD price is fetched live from Cardano to determine the outcome."
+              title="Preprod price or mock fallback"
+              description="The app attempts a preprod Charli3 ADA/USD lookup and labels mock or fallback data when used."
             />
             <Principle
-              title="Fair release or refund"
-              description="Goal met? Funds go to the creator. Goal not met? Every supporter gets their ADA back. No ambiguity."
+              title="Simulated threshold result"
+              description="The calculation shows a release or refund scenario. Wallet transfers and escrow are future work."
             />
             <Principle
               title="Transparent proof"
-              description="Every settlement includes the oracle price, raw datum, source, and timestamp — fully verifiable on-chain."
+              description="The display shows price, source, status and timestamp. It is not an on-chain transfer receipt or raw datum proof."
             />
           </div>
         </div>
@@ -179,7 +179,7 @@ export default function Home() {
                   Closing Soon
                 </h2>
                 <p className="mt-1 text-sm text-zinc-400">
-                  Back these campaigns before settlement.
+                  Explore demo campaigns and their outcome calculations.
                 </p>
               </div>
             </div>
