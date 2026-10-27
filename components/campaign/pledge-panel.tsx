@@ -14,7 +14,7 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
     <div className="rounded-xl border border-zinc-700/50 bg-zinc-900 p-6">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
-          Live Oracle Rate
+          ADA/USD Price Input
         </h3>
         <Chip
           label={oracle.status === "live" ? "Live" : oracle.status === "fallback" ? "Fallback" : "Mock"}
@@ -41,7 +41,7 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
           href={`/campaigns/${campaignId}/close`}
           className="block w-full rounded-lg bg-zinc-100 py-3 text-center text-sm font-medium text-zinc-900 transition-colors hover:bg-white"
         >
-          Settle Campaign
+          Calculate Demo Outcome
         </Link>
         <button
           disabled
@@ -52,8 +52,8 @@ export async function PledgePanel({ campaignId }: PledgePanelProps) {
       </div>
 
       <p className="mt-5 text-xs text-zinc-500 leading-relaxed">
-        At close, the live Charli3 ADA/USD price determines whether
-        pledged ADA meets the campaign goal in USD.
+        The reported preprod price or labeled mock fallback is compared with
+        demo pledges and the USD goal. No ADA transfer occurs.
       </p>
     </div>
   );

@@ -9,9 +9,8 @@ export default function NewCampaignPage() {
           Create a Campaign
         </h1>
         <p className="mt-2 text-sm text-zinc-500 max-w-md leading-relaxed">
-          Set your funding goal in USD. Supporters back your campaign in ADA.
-          At close, the live Charli3 ADA/USD oracle determines whether
-          the goal was met.
+          Enter a demo goal in USD. This form redirects to a sample campaign; it
+          does not create a campaign, collect ADA or settle funds.
         </p>
         <div className="mt-10">
           <CampaignForm />

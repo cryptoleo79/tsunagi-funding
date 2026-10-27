@@ -1,21 +1,19 @@
 # Oracle Integration Notes
 
-## Intended flow
+## Implemented prototype flow
 
-1. Creator sets a campaign with a USD-denominated goal.
-2. Supporters pledge ADA to the campaign.
-3. When the campaign closes, the settlement path is triggered.
-4. The settlement reads the current ADA/USD price from the Charli3 on-chain feed.
-5. `pledged_ada * ada_usd_price` is compared to `goal_usd`.
-6. If the USD equivalent meets or exceeds the goal, funds are released to the creator.
-7. If not, pledges are returned to supporters.
+1. A demo campaign has a USD-denominated goal and sample ADA pledge amount.
+2. At the close page, the app requests a Charli3 ADA/USD preprod price.
+3. If the lookup is unavailable or mock mode is selected, it uses labeled mock data.
+4. `pledged_ada * ada_usd_price` is compared to `goal_usd`.
+5. The UI displays a release or refund scenario. No pledge custody, escrow,
+   release or refund transaction is implemented.
 
 ## Why Charli3
 
 Charli3 provides decentralized oracle feeds on Cardano. The ADA/USD feed
-gives a verifiable, on-chain price that both parties can trust at settlement
-time. This removes the need for either side to trust a centralized price
-source.
+can provide a preprod price input for the demo calculation. This
+prototype does not validate price freshness or produce a settlement receipt.
 
 ## Integration path
 
@@ -26,7 +24,7 @@ The oracle layer queries the Charli3 ADA/USD feed via Kupo:
 3. The most recent UTxO is selected (highest slot)
 4. The inline datum is fetched and decoded from CBOR (Plutus data format)
 5. A heuristic decoder tries known Charli3 datum layouts to extract price and timestamp
-6. If decoding succeeds, the live price is returned
+6. If decoding succeeds, the preprod price is reported with `live` status
 7. If any step fails, the system falls back to mock data with an explicit reason
 
 ## File structure
@@ -61,9 +59,9 @@ hardcoded demo prices and labels them clearly as mock data.
 - Charli3 ODV datum format: validated against real preprod UTxO data
 - Price extraction: handles known Charli3 layouts including nested Constr/Map
 - Fallback: graceful, with explicit reason shown in the UI
-- Live: working on preprod with hosted Kupo endpoint
+- Preprod lookup: previously exercised with a hosted Kupo endpoint; availability is configuration-dependent
 
 ## What is not yet done
 
 - Price staleness validation (rejecting prices older than a threshold)
-- On-chain settlement transactions
+- Wallet pledge transactions, escrow and on-chain release/refund transactions

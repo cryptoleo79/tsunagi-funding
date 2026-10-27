@@ -19,7 +19,7 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-xs font-medium uppercase tracking-wider text-zinc-400">
-          Settlement Decision
+          Simulated Outcome
         </h2>
         {oracleStatus && (
           <Chip
@@ -32,8 +32,8 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
       {/* Inputs */}
       <div className="space-y-3">
         <MathRow step="1" label="Goal in USD" value={formatUsd(result.goalUsd)} />
-        <MathRow step="2" label="Backed in ADA" value={formatAda(result.pledgedAda)} />
-        <MathRow step="3" label="Live ADA/USD" value={formatAdaUsd(result.adaUsdPrice)} />
+        <MathRow step="2" label="Demo pledges" value={formatAda(result.pledgedAda)} />
+        <MathRow step="3" label="Price input ADA/USD" value={formatAdaUsd(result.adaUsdPrice)} />
       </div>
 
       <div className="my-7 border-t border-zinc-800" />
@@ -41,7 +41,7 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
       {/* Calculation */}
       <div>
         <div className="flex items-baseline justify-between">
-          <span className="text-sm text-zinc-300">USD Value at Close</span>
+          <span className="text-sm text-zinc-300">Simulated USD value</span>
           <span className="text-2xl font-semibold text-white tabular-nums">
             {formatUsd(result.usdRaised)}
           </span>
@@ -63,7 +63,7 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
         </div>
         <div className="mt-1.5 flex justify-between text-xs">
           <span className={funded ? "text-emerald-400" : "text-amber-400"}>
-            {formatUsd(result.usdRaised)} raised
+            {formatUsd(result.usdRaised)} simulated
           </span>
           <span className="text-zinc-500">
             {formatUsd(result.goalUsd)} goal
@@ -95,15 +95,15 @@ export function SettlementResultBanner({ result, oracleStatus }: SettlementResul
                 funded ? "text-emerald-300" : "text-amber-300"
               }`}
             >
-              {funded ? "Funds Released" : "Supporters Refunded"}
+              {funded ? "Release scenario" : "Refund scenario"}
             </h3>
             <p className="mt-0.5 text-sm text-zinc-300">
               {formatUsd(result.usdRaised)}{" "}
               {funded ? "\u2265" : "<"}{" "}
               {formatUsd(result.goalUsd)}
               {funded
-                ? " — goal met, funds released to creator"
-                : " — goal not met, ADA returned to supporters"}
+                ? " — goal met in demo; no funds transferred"
+                : " — goal not met in demo; no ADA returned"}
             </p>
           </div>
         </div>

@@ -18,7 +18,7 @@ const content: Record<string, CampaignContent> = {
       "Exclusive behind-the-scenes studio clips",
     ],
     story:
-      "This EP has been three years in the making. I grew up in Osu, Accra, surrounded by highlife and hip-hop, but it was the first time I heard Afrobeats fused with electronic production that everything clicked. Since then I've been writing, recording demos in my bedroom, and saving up to get into a proper studio.\n\nTSUNAGI lets me set a clear funding target in USD while supporters pledge in ADA — and at close, the live oracle decides the outcome. No middlemen, no platform fees skimming 10%. Just creators and the people who believe in them.\n\nThe six tracks on this EP blend Twi-language vocals with Afrobeats rhythms and ambient synth textures. Every stem — vocals, drums, bass, synths — will be minted as Cardano native assets, so supporters literally own a piece of the music. Think of it as a decentralized album credits page.\n\nFunds go directly toward studio time at Sandbox Studios in East Legon, professional mixing by Kwame Boateng, mastering at Sterling Sound, and CNFT minting costs. Whatever remains covers promotion and a small listening-party event in Accra.",
+      "This EP has been three years in the making. I grew up in Osu, Accra, surrounded by highlife and hip-hop, but it was the first time I heard Afrobeats fused with electronic production that everything clicked. Since then I've been writing, recording demos in my bedroom, and saving up to get into a proper studio.\n\nIn this fictional demo, TSUNAGI represents a USD target and sample ADA pledges. At close, a preprod price or mock fallback calculates a possible outcome; no ADA moves.\n\nThe six tracks on this EP blend Twi-language vocals with Afrobeats rhythms and ambient synth textures. Every stem — vocals, drums, bass, synths — will be minted as Cardano native assets, so supporters literally own a piece of the music. Think of it as a decentralized album credits page.\n\nA future funded campaign would budget proceeds toward studio time at Sandbox Studios in East Legon, professional mixing by Kwame Boateng, mastering at Sterling Sound, and CNFT minting costs. Whatever remains covers promotion and a small listening-party event in Accra.",
 
     creatorBio:
       "Kojo Asante is a singer-songwriter and producer from Accra, Ghana. He's been part of the Accra electronic music scene since 2022, performing at Chale Wote and collaborating with producers across West Africa. This is his debut solo release.",
@@ -88,7 +88,7 @@ const content: Record<string, CampaignContent> = {
       },
       {
         question: "What happens if the campaign doesn't reach its goal?",
-        answer: "At close, the live Charli3 ADA/USD oracle determines the USD value of pledged ADA. If the goal isn't met, all ADA is returned to supporters automatically.",
+        answer: "At close, a Charli3 preprod price or mock fallback determines the displayed USD value of demo ADA. If the demo goal is not met, the UI shows a refund scenario. This prototype does not hold or return ADA.",
       },
       {
         question: "Can I listen to demos before pledging?",
@@ -105,7 +105,7 @@ const content: Record<string, CampaignContent> = {
       "Priority registration for the Plutus workshop",
     ],
     story:
-      "West Africa has one of the fastest-growing Cardano communities in the world, but there's never been a dedicated in-person event for builders in the region. That changes now.\n\nThe Cardano Community Summit in Accra brings together stake pool operators, DApp developers, governance delegates, and newcomers for two days of talks, workshops, and networking. We're hosting at the Accra International Conference Centre with simultaneous translation in English, French, and Twi.\n\nThe summit isn't a corporate conference — it's a community event. Speakers include local SPOs, Catalyst fund recipients, and developers who've shipped real projects on mainnet. We're also running a half-day Plutus workshop for developers who want hands-on experience writing validators.\n\nWe chose TSUNAGI because the oracle-based settlement gives our supporters confidence. They know exactly how the outcome is determined — no ambiguity, no trust required. If we fall short, they get their ADA back. If we hit the target, the funds go directly to making this event happen.",
+      "West Africa has one of the fastest-growing Cardano communities in the world, but there's never been a dedicated in-person event for builders in the region. That changes now.\n\nThe Cardano Community Summit in Accra brings together stake pool operators, DApp developers, governance delegates, and newcomers for two days of talks, workshops, and networking. We're hosting at the Accra International Conference Centre with simultaneous translation in English, French, and Twi.\n\nThe summit isn't a corporate conference — it's a community event. Speakers include local SPOs, Catalyst fund recipients, and developers who've shipped real projects on mainnet. We're also running a half-day Plutus workshop for developers who want hands-on experience writing validators.\n\nIn this fictional demo, the preprod oracle lookup or mock fallback helps illustrate a threshold decision. The displayed outcome is simulated; the prototype does not hold ADA or refund supporters.",
 
     creatorBio:
       "Ama Darko is a community organizer and Catalyst proposal reviewer based in Accra. She's coordinated three Cardano meetups in Ghana and helped onboard over 200 new wallet holders through local education workshops.",
@@ -159,7 +159,7 @@ const content: Record<string, CampaignContent> = {
       },
       {
         question: "How are funds handled if the goal isn't met?",
-        answer: "At campaign close, the Charli3 ADA/USD oracle determines the USD value of pledged ADA. If the total falls short of the $10,000 goal, all pledges are automatically returned to supporters.",
+        answer: "At demo close, a Charli3 preprod price or mock fallback determines the displayed USD value of sample ADA. If the demo total falls short of the $10,000 goal, the UI shows a refund scenario. No ADA is held or returned.",
       },
       {
         question: "Is this affiliated with the Cardano Foundation?",

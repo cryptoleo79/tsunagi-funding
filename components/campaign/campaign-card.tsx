@@ -31,7 +31,7 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           </p>
         </div>
         <Chip
-          label={campaign.status === "active" ? "Active" : "Closed"}
+          label={campaign.status === "active" ? "Demo active" : "Demo closed"}
           variant={campaign.status === "active" ? "success" : "default"}
         />
       </div>
@@ -54,13 +54,13 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
           />
         </div>
         <div className="mt-3 flex items-center justify-between text-xs text-zinc-400">
-          <span>{formatAda(campaign.pledgedAda)} pledged</span>
+          <span>{formatAda(campaign.pledgedAda)} demo pledges</span>
           <span>
             {remaining > 0 ? `${remaining} days left` : "Campaign ended"}
           </span>
         </div>
         <p className="mt-2 text-xs text-zinc-500">
-          {campaign.supporterCount} supporters
+          {campaign.supporterCount} demo supporters
         </p>
       </div>
     </Link>
